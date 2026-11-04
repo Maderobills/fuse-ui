@@ -12,7 +12,10 @@ export default defineConfig({
     },
     rollupOptions: {
       external: ['vue', 'vue-router', '@lucide/vue'],
-      output: { globals: { vue: 'Vue' } },
+      output: {
+        exports: 'named',
+        globals: { vue: 'Vue' },
+      },
     },
   },
 })
