@@ -36,3 +36,22 @@
     display: none;
   }
 }
+
+@utility scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-outline) transparent;
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-outline);
+    border-radius: 9999px;
+  }
+  .dark & {
+    scrollbar-color: var(--color-dark-outline) transparent;
+  }
+  .dark &::-webkit-scrollbar-thumb {
+    background-color: var(--color-dark-outline);
+  }
+}

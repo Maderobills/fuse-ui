@@ -12,6 +12,8 @@ A sleek, responsive, and customizable Vue 3 UI component suite crafted for moder
   - `FuseSideBar` — Collapsible navigation sidebar with submenus, tooltips in collapsed view, user profile summary, and role badges.
   - `FuseGreetBar` — Clean top app bar with time-based dynamic greetings ("Good morning, Kwame"), profile navigation, and action slots.
   - `FuseThemeToggler` — Animated smooth theme switcher (supports standalone self-management or controlled `v-model`).
+  - `FuseStatCard` — KPI and metrics card with automated currency formatting, compact notations (e.g. `1.2M`), tone color-coding, trend indicators, and skeleton loaders.
+  - `FuseInput` — All-in-one form input component supporting text, password (with show/hide eye toggle), searchable select & multiselect, textarea, radio/checkbox groups, and file dropzone with preview.
   - `useFuseTheme` — Shared composable for reading and toggling the active theme from anywhere in your app.
 
 ---
@@ -117,39 +119,48 @@ export default {
 
 ## 🚀 Quick Start Example
 
-Here is a full dashboard layout combining `FuseSideBar`, `FuseGreetBar`, and `FuseThemeToggler`:
+Here is a full dashboard layout combining `FuseSideBar`, `FuseGreetBar`, `FuseStatCard`, and `FuseInput`:
 
 ```vue
-<!-- App.vue or DefaultLayout.vue -->
+<!-- App.vue or Dashboard.vue -->
 <script setup>
-import { FuseSideBar, FuseGreetBar, FuseThemeToggler } from '@maderobills/fuse-ui'
-import { LayoutDashboard, Users, Settings, BookOpen } from '@lucide/vue'
+import { ref } from 'vue'
+import {
+  FuseSideBar,
+  FuseGreetBar,
+  FuseThemeToggler,
+  FuseStatCard,
+  FuseInput,
+} from '@maderobills/fuse-ui'
+import { LayoutDashboard, Users, Settings, DollarSign, UserCheck } from '@lucide/vue'
+
+const searchQuery = ref('')
+const selectedRole = ref('all')
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, route: '/' },
-  {
-    label: 'Academic',
-    icon: BookOpen,
-    children: [
-      { label: 'Courses', route: '/courses' },
-      { label: 'Exams', route: '/exams' },
-    ],
-  },
   { label: 'Users', icon: Users, route: '/users' },
   { label: 'Settings', icon: Settings, route: '/settings' },
 ]
 
 const currentUser = {
   name: 'Kwame Mensah',
-  role: 'admin', // matches roleClasses in FuseSideBar
+  role: 'admin',
   email: 'kwame@school.edu',
-  avatar: 'https://i.pravatar.cc/150?u=kwame', // optional image URL
+  avatar: 'https://i.pravatar.cc/150?u=kwame',
 }
+
+const roleOptions = [
+  { label: 'All Roles', value: 'all' },
+  { label: 'Admins', value: 'admin' },
+  { label: 'Managers', value: 'manager' },
+  { label: 'Students', value: 'student' },
+]
 </script>
 
 <template>
   <div class="flex h-screen bg-background dark:bg-dark-background text-foreground dark:text-dark-foreground overflow-hidden">
-    <!-- Sidebar Navigation -->
+    <!-- Sidebar -->
     <FuseSideBar
       brand-name="SchoolHub"
       brand-tagline="Management Portal"
@@ -157,7 +168,6 @@ const currentUser = {
       :user="currentUser"
       home-route="/"
       profile-route="/profile"
-      @logout="console.log('User logged out')"
     />
 
     <!-- Main Content Area -->
@@ -165,14 +175,72 @@ const currentUser = {
       <!-- Top Bar -->
       <FuseGreetBar :user="currentUser" greeting>
         <template #theme-toggle>
-          <!-- Self-managed theme toggler -->
           <FuseThemeToggler />
         </template>
       </FuseGreetBar>
 
-      <!-- Page View -->
-      <main class="flex-1 overflow-y-auto p-4 lg:p-6">
-        <router-view />
+      <!-- Dashboard View -->
+      <main class="flex-1 overflow-y-auto p-4 lg:p-6 space-y-6">
+        <!-- Stat Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <FuseStatCard
+            title="Total Revenue"
+            type="money"
+            :value="148500"
+            currency="USD"
+            :icon="DollarSign"
+            tone="success"
+            :trend="{ direction: 'up', label: '+18% vs last month' }"
+          />
+
+          <FuseStatCard
+            title="Active Students"
+            type="number"
+            :value="2450"
+            compact
+            :icon="UserCheck"
+            tone="primary"
+            :trend="{ direction: 'up', label: '+4.2%' }"
+          />
+
+          <FuseStatCard
+            title="Course Completion"
+            type="number"
+            :value="87"
+            suffix="%"
+            tone="info"
+          />
+
+          <FuseStatCard
+            title="Pending Invoices"
+            type="money"
+            :value="12400"
+            currency="GHS"
+            tone="warning"
+            :trend="{ direction: 'down', label: '-5%', good: true }"
+          />
+        </div>
+
+        <!-- Form Inputs Example -->
+        <div class="bg-surface dark:bg-dark-surface p-6 rounded-xl border border-outline dark:border-dark-outline space-y-4 max-w-xl">
+          <h2 class="text-base font-semibold">User Search & Filters</h2>
+          
+          <FuseInput
+            type="search"
+            label="Search Directory"
+            placeholder="Search by name, email..."
+            v-model="searchQuery"
+            clearable
+          />
+
+          <FuseInput
+            type="select"
+            label="Filter by Role"
+            :options="roleOptions"
+            v-model="selectedRole"
+            searchable
+          />
+        </div>
       </main>
     </div>
   </div>
@@ -233,7 +301,130 @@ const currentUser = {
 
 ---
 
-### 4. `useFuseTheme()` Composable
+### 4. `FuseStatCard`
+
+A versatile card component for rendering numbers, monetary metrics, indicators, and trends.
+
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `title` | `String` | *required* | Card header title. |
+| `value` | `Number \| String` | `0` | Raw numeric or string value to format and display. |
+| `type` | `'number' \| 'money' \| 'info'` | `'number'` | Determines value formatting style. |
+| `formatted` | `String` | `null` | Custom string that overrides automatic formatting when provided. |
+| `description` | `String` | `''` | Subtext printed below the value. |
+| `icon` | `Component` | `null` | Lucide icon or custom Vue component. |
+| `image` | `String` | `''` | Avatar or image URL (takes precedence over `icon`). |
+| `tone` | `'primary' \| 'success' \| 'warning' \| 'error' \| 'info'` | `'primary'` | Accent color applied to the icon badge background and text. |
+| `currency` | `String` | `'GHS'` | Currency code (e.g., `'USD'`, `'EUR'`, `'GBP'`, `'GHS'`). |
+| `currencySymbols` | `Object` | `{ USD: '$', EUR: '€', GBP: '£' }` | Maps currency codes to symbols. Codes not listed display as `"CODE 1,200.00"`. |
+| `decimals` | `Number` | `2` for money, `0` for number | Number of decimal places to render. |
+| `compact` | `Boolean` | `false` | Shortens large numbers (e.g. `1,200` &rarr; `1.2K`, `3,400,000` &rarr; `3.4M`). |
+| `suffix` | `String` | `''` | Appended string (e.g. `'%'`, `' days'`). |
+| `locale` | `String` | `'en-GH'` | Locale string passed to `Intl.NumberFormat`. |
+| `trend` | `Object` | `null` | `{ direction: 'up' \| 'down', label: '+12%', good?: boolean }`. Set `good: true` for falling costs. |
+| `loading` | `Boolean` | `false` | Displays an animated skeleton placeholder. |
+
+#### Slots
+- `#icon`: Replaces the top-right icon badge.
+- `#value="{ value }"`: Custom value presentation.
+- `#footer`: Additional content at the bottom of the card.
+
+---
+
+### 5. `FuseInput`
+
+An all-in-one input component supporting text fields, secure passwords with toggle, selects, radio/checkboxes, textareas, and file dropzones.
+
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `type` | `String` | `'text'` | Input type (see Supported Types below). |
+| `v-model` | `Any` | `null` | Two-way binding for the input value. |
+| `label` | `String` | `''` | Accessible label rendered above the input. |
+| `placeholder` | `String` | `''` | Placeholder text (also acts as label for standalone checkbox). |
+| `options` | `Array` | `[]` | Array of options `[{ label, value }]` for select, dropdown, radio, or checkbox groups. |
+| `error` | `String` | `''` | Validation error message (adds red ring and alert message). |
+| `hint` | `String` | `''` | Help text displayed beneath the input when there is no error. |
+| `required` | `Boolean` | `false` | Appends a red asterisk `*` to the label. |
+| `disabled` | `Boolean` | `false` | Disables user interaction and styles input as muted. |
+| `readonly` | `Boolean` | `false` | Prevents value changes while retaining normal contrast. |
+| `clearable` | `Boolean` | `false` | Shows a clear button to reset input value. |
+| `searchable` | `Boolean` | `false` | Enables real-time search filtering in `select` / `dropdown` modes. |
+| `multiple` | `Boolean` | `false` | Enables multi-tag selection for `select` modes. |
+| `rows` | `Number` | `3` | Visible text lines when `type="textarea"`. |
+| `icon` | `Component \| Boolean` | `undefined` | Custom icon component. Pass `false` to disable auto-icon. |
+| `fileType` | `String` | `''` | Native `accept` attribute for `type="file"` (e.g., `'image/*', '.pdf'`). |
+| `preview` | `Boolean` | `false` | Shows thumbnail previews for uploaded images in `type="file"`. |
+
+#### Supported Input Types:
+- **Text & Numeric**: `'text'`, `'email'`, `'password'`, `'search'`, `'number'`, `'tel'`, `'url'`
+- **Date & Time**: `'date'`, `'time'`, `'datetime-local'`, `'month'`, `'week'`
+- **Special**: `'color'`, `'range'`
+- **Selection**: `'select'`, `'dropdown'`, `'multiselect'`
+- **Multi-line**: `'textarea'`
+- **Choices**: `'checkbox'`, `'radio'`
+- **Upload**: `'file'`
+
+#### Automatic Icons:
+`FuseInput` automatically supplies intuitive Lucide icons based on type:
+- `email` &rarr; `Mail`
+- `password` &rarr; `Lock` (with toggleable `Eye` / `EyeOff` password reveal)
+- `search` &rarr; `Search`
+- `tel` &rarr; `Phone`
+- `number` &rarr; `Hash`
+- `date`, `time`, `datetime-local` &rarr; `Calendar`
+
+#### Usage Examples:
+
+```vue
+<!-- Password with automatic Show/Hide toggle -->
+<FuseInput
+  type="password"
+  label="Account Password"
+  v-model="password"
+  required
+  hint="Must be at least 8 characters"
+/>
+
+<!-- Searchable Multi-Select -->
+<FuseInput
+  type="select"
+  label="Assign Subjects"
+  :options="[
+    { label: 'Mathematics', value: 'math' },
+    { label: 'Physics', value: 'phy' },
+    { label: 'Chemistry', value: 'chem' },
+  ]"
+  v-model="selectedSubjects"
+  multiple
+  searchable
+  clearable
+/>
+
+<!-- Radio Option Group -->
+<FuseInput
+  type="radio"
+  label="Notification Frequency"
+  :options="[
+    { label: 'Immediate', value: 'instant' },
+    { label: 'Daily Digest', value: 'daily' },
+    { label: 'Weekly Summary', value: 'weekly' },
+  ]"
+  v-model="frequency"
+/>
+
+<!-- File Upload with Image Previews -->
+<FuseInput
+  type="file"
+  label="Upload ID Card"
+  file-type="image/*"
+  preview
+  v-model="idFile"
+/>
+```
+
+---
+
+### 6. `useFuseTheme()` Composable
 
 Use this anywhere in your app to read or change the theme without creating custom wrappers:
 
@@ -256,7 +447,7 @@ Make sure your CSS includes `@source` pointing to `fuse-ui`:
 ```css
 @source "../../node_modules/@maderobills/fuse-ui";
 ```
-Without this, Tailwind v4 purges all unused classes and will not style the sidebar.
+Without this, Tailwind v4 purges all unused classes and will not style the components.
 
 ### 2. Mobile Menu Overlaps Header Text?
 `FuseSideBar` uses a fixed floating hamburger button on mobile screens (`lg:hidden`). `FuseGreetBar` automatically leaves space for it when `mobileMenuOffset` is enabled (default `true`).
