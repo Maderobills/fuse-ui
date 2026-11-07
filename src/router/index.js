@@ -1,36 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useFuseBreadcrumbs } from '../composables/useFuseBreadcrumbs.js'
-import App from '../App.vue'
-
-/*
-|--------------------------------------------------------------------------
-| Fuse-UI Documentation — Vue Router Configuration
-|--------------------------------------------------------------------------
-|
-| Features:
-|   - Deep-linking for every component, variation, and recipe
-|   - Automatic breadcrumb trail synchronization via useFuseBreadcrumbs()
-|   - Contextual meta (title, description, category, and icon tags)
-|   - Tailwind / Vue.js official documentation style wayfinding
-|--------------------------------------------------------------------------
-*/
 
 export const routes = [
-  // ─────────────────────────────────────────────────────────────
-  // DEFAULT REDIRECT
-  // ─────────────────────────────────────────────────────────────
   {
     path: '/',
     redirect: '/docs/whats-new',
   },
 
-  // ─────────────────────────────────────────────────────────────
   // 1. GETTING STARTED
-  // ─────────────────────────────────────────────────────────────
   {
     path: '/docs/whats-new',
     name: 'docs-whats-new',
-    component: App,
+    component: () => import('../views/WhatsNewView.vue'),
     meta: {
       id: 'whats-new',
       title: "What's New in Fuse-UI v0.1.0",
@@ -46,7 +27,7 @@ export const routes = [
   {
     path: '/docs/installation',
     name: 'docs-installation',
-    component: App,
+    component: () => import('../views/InstallationView.vue'),
     meta: {
       id: 'installation',
       title: 'Quick Installation & Setup',
@@ -62,7 +43,7 @@ export const routes = [
   {
     path: '/docs/theming',
     name: 'docs-theming',
-    component: App,
+    component: () => import('../views/ThemingView.vue'),
     meta: {
       id: 'theming',
       title: 'Theming & Design Tokens',
@@ -78,7 +59,7 @@ export const routes = [
   {
     path: '/docs/decision-guide',
     name: 'docs-decision-guide',
-    component: App,
+    component: () => import('../views/DecisionGuideView.vue'),
     meta: {
       id: 'decision-guide',
       title: 'Component Decision Guide: When to Use What',
@@ -92,13 +73,11 @@ export const routes = [
     },
   },
 
-  // ─────────────────────────────────────────────────────────────
   // 2. LAYOUT & NAVIGATION
-  // ─────────────────────────────────────────────────────────────
   {
     path: '/docs/components/sidebar',
     name: 'docs-sidebar',
-    component: App,
+    component: () => import('../views/SideBarDocView.vue'),
     meta: {
       id: 'sidebar',
       title: 'FuseSideBar — Application Navigation Shell',
@@ -114,7 +93,7 @@ export const routes = [
   {
     path: '/docs/components/greetbar',
     name: 'docs-greetbar',
-    component: App,
+    component: () => import('../views/GreetBarDocView.vue'),
     meta: {
       id: 'greetbar',
       title: 'FuseGreetBar — Context Header & Top Banner',
@@ -130,7 +109,7 @@ export const routes = [
   {
     path: '/docs/components/breadcrumbs',
     name: 'docs-breadcrumbs',
-    component: App,
+    component: () => import('../views/BreadcrumbsDocView.vue'),
     meta: {
       id: 'breadcrumbs',
       title: 'FuseBreadcrumbs — Universal Path Trails',
@@ -144,13 +123,11 @@ export const routes = [
     },
   },
 
-  // ─────────────────────────────────────────────────────────────
   // 3. DATA DISPLAY
-  // ─────────────────────────────────────────────────────────────
   {
     path: '/docs/components/table',
     name: 'docs-table',
-    component: App,
+    component: () => import('../views/TableDocView.vue'),
     meta: {
       id: 'table',
       title: 'FuseTable — Enterprise Data Grid',
@@ -166,7 +143,7 @@ export const routes = [
   {
     path: '/docs/components/statcard',
     name: 'docs-statcard',
-    component: App,
+    component: () => import('../views/StatCardDocView.vue'),
     meta: {
       id: 'statcard',
       title: 'FuseStatCard — Metrics & KPIs',
@@ -180,15 +157,13 @@ export const routes = [
     },
   },
 
-  // ─────────────────────────────────────────────────────────────
   // 4. FORM CONTROLS
-  // ─────────────────────────────────────────────────────────────
   {
     path: '/docs/components/input',
     name: 'docs-input',
-    component: App,
+    component: () => import('../views/InputDocView.vue'),
     meta: {
-      id: 'inputs',
+      id: 'input',
       title: 'FuseInput — Unified Form Controls',
       description: 'Single component managing 15+ input types: passwords, selects, textareas, files, and more.',
       category: 'Form Controls',
@@ -199,14 +174,76 @@ export const routes = [
       ],
     },
   },
+  {
+    path: '/docs/components/input/text-password',
+    name: 'docs-input-text',
+    component: () => import('../views/InputDocView.vue'),
+    meta: {
+      id: 'input',
+      title: 'FuseInput — Text, Email & Password',
+      description: 'Text inputs with auto mail icons and secure show/hide password toggle.',
+      category: 'Form Controls',
+      breadcrumbs: [
+        { label: 'Documentation', route: '/docs/whats-new' },
+        { label: 'Form Controls' },
+        { label: 'Text & Password' },
+      ],
+    },
+  },
+  {
+    path: '/docs/components/input/select-tags',
+    name: 'docs-input-select',
+    component: () => import('../views/InputDocView.vue'),
+    meta: {
+      id: 'input',
+      title: 'FuseInput — Select & Multi-Select',
+      description: 'Single searchable dropdowns and multi-select badge tags.',
+      category: 'Form Controls',
+      breadcrumbs: [
+        { label: 'Documentation', route: '/docs/whats-new' },
+        { label: 'Form Controls' },
+        { label: 'Select & Multi-Select' },
+      ],
+    },
+  },
+  {
+    path: '/docs/components/input/controls',
+    name: 'docs-input-controls',
+    component: () => import('../views/InputDocView.vue'),
+    meta: {
+      id: 'input',
+      title: 'FuseInput — Sliders, Colors & Dates',
+      description: 'Native date pickers, range sliders, and interactive color palettes.',
+      category: 'Form Controls',
+      breadcrumbs: [
+        { label: 'Documentation', route: '/docs/whats-new' },
+        { label: 'Form Controls' },
+        { label: 'Sliders & Colors' },
+      ],
+    },
+  },
+  {
+    path: '/docs/components/input/choices',
+    name: 'docs-input-choices',
+    component: () => import('../views/InputDocView.vue'),
+    meta: {
+      id: 'input',
+      title: 'FuseInput — Textarea, Radio & Checkboxes',
+      description: 'Multi-line textareas, grouped radio buttons, and single/multi checkboxes.',
+      category: 'Form Controls',
+      breadcrumbs: [
+        { label: 'Documentation', route: '/docs/whats-new' },
+        { label: 'Form Controls' },
+        { label: 'Choices & Checkboxes' },
+      ],
+    },
+  },
 
-  // ─────────────────────────────────────────────────────────────
   // 5. FILTERING & SEARCH
-  // ─────────────────────────────────────────────────────────────
   {
     path: '/docs/components/filters',
     name: 'docs-filters',
-    component: App,
+    component: () => import('../views/FiltersDocView.vue'),
     meta: {
       id: 'filters',
       title: 'FuseFilters — Query & Filter Toolbar',
@@ -220,15 +257,13 @@ export const routes = [
     },
   },
 
-  // ─────────────────────────────────────────────────────────────
   // 6. THEMING & UTILITIES
-  // ─────────────────────────────────────────────────────────────
   {
     path: '/docs/components/themetoggler',
     name: 'docs-themetoggler',
-    component: App,
+    component: () => import('../views/ThemeTogglerDocView.vue'),
     meta: {
-      id: 'theming',
+      id: 'themetoggler',
       title: 'FuseThemeToggler & Composables',
       description: 'Dark/light mode switch button and programmatic composable helpers.',
       category: 'Theming & Utilities',
@@ -239,46 +274,44 @@ export const routes = [
       ],
     },
   },
+  {
+    path: '/docs/composables/usefusetheme',
+    name: 'docs-usefusetheme',
+    component: () => import('../views/ThemingView.vue'),
+    meta: {
+      id: 'theming',
+      title: 'useFuseTheme() — Programmatic Theming',
+      description: 'Read and toggle dark mode in JavaScript.',
+      category: 'Theming & Utilities',
+      breadcrumbs: [
+        { label: 'Documentation', route: '/docs/whats-new' },
+        { label: 'Composables' },
+        { label: 'useFuseTheme' },
+      ],
+    },
+  },
+  {
+    path: '/docs/composables/usefusebreadcrumbs',
+    name: 'docs-usefusebreadcrumbs',
+    component: () => import('../views/BreadcrumbsDocView.vue'),
+    meta: {
+      id: 'breadcrumbs',
+      title: 'useFuseBreadcrumbs() — Global Breadcrumb Store',
+      description: 'Manage breadcrumb navigation state across pages.',
+      category: 'Theming & Utilities',
+      breadcrumbs: [
+        { label: 'Documentation', route: '/docs/whats-new' },
+        { label: 'Composables' },
+        { label: 'useFuseBreadcrumbs' },
+      ],
+    },
+  },
 
-  // ─────────────────────────────────────────────────────────────
   // 7. REAL-WORLD RECIPES & PATTERNS
-  // ─────────────────────────────────────────────────────────────
-  {
-    path: '/docs/recipes/dashboard',
-    name: 'docs-recipe-dashboard',
-    component: App,
-    meta: {
-      id: 'recipe-dashboard',
-      title: 'Recipe: Complete Enterprise Dashboard',
-      description: 'Production-ready dashboard layout combining Sidebar, Header, Stats, and Tables.',
-      category: 'Recipes & Architecture',
-      breadcrumbs: [
-        { label: 'Documentation', route: '/docs/whats-new', icon: 'sparkles' },
-        { label: 'Recipes' },
-        { label: 'Dashboard Pattern' },
-      ],
-    },
-  },
-  {
-    path: '/docs/recipes/crud',
-    name: 'docs-recipe-crud',
-    component: App,
-    meta: {
-      id: 'recipe-crud',
-      title: 'Recipe: Full Admin CRUD Table Workflow',
-      description: 'End-to-end data grid with row actions, search filtering, and bulk operations.',
-      category: 'Recipes & Architecture',
-      breadcrumbs: [
-        { label: 'Documentation', route: '/docs/whats-new', icon: 'sparkles' },
-        { label: 'Recipes' },
-        { label: 'Admin CRUD Pattern' },
-      ],
-    },
-  },
   {
     path: '/docs/recipes/rbac',
     name: 'docs-recipe-rbac',
-    component: App,
+    component: () => import('../views/RbacRecipeView.vue'),
     meta: {
       id: 'recipe-rbac',
       title: 'Recipe: Role-Based Access Control (RBAC)',
@@ -292,9 +325,6 @@ export const routes = [
     },
   },
 
-  // ─────────────────────────────────────────────────────────────
-  // FALLBACK
-  // ─────────────────────────────────────────────────────────────
   {
     path: '/:pathMatch(.*)*',
     redirect: '/docs/whats-new',
@@ -310,17 +340,12 @@ export const router = createRouter({
   },
 })
 
-// ─────────────────────────────────────────────────────────────────
-// GLOBAL NAVIGATION GUARD (Syncs Breadcrumbs & Page Titles)
-// ─────────────────────────────────────────────────────────────────
 router.beforeEach((to) => {
-  // 1. Sync global breadcrumbs trail
   const { setBreadcrumbs } = useFuseBreadcrumbs()
   if (to.meta?.breadcrumbs) {
     setBreadcrumbs(to.meta.breadcrumbs)
   }
 
-  // 2. Update browser document title
   const title = to.meta?.title || 'Documentation'
   if (typeof document !== 'undefined') {
     document.title = `${title} — Fuse-UI || Mbills Enterprise`
@@ -328,4 +353,3 @@ router.beforeEach((to) => {
 })
 
 export default router
-
