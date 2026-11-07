@@ -118,3 +118,4 @@ import { DollarSign, Users } from '@lucide/vue'
     </DemoPreview>
   </div>
 </template>
+

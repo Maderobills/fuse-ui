@@ -104,3 +104,4 @@ const accessibleNav = computed(() => getNavItemsForRole(userRole.value))
     </DemoPreview>
   </div>
 </template>
+

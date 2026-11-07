@@ -69,3 +69,4 @@ import { Lightbulb } from '@lucide/vue'
     </div>
   </div>
 </template>
+
