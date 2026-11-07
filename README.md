@@ -15,6 +15,8 @@ A sleek, responsive, and customizable Vue 3 UI component suite crafted for moder
   - `FuseStatCard` — KPI and metrics card with automated currency formatting, compact notations (e.g. `1.2M`), tone color-coding, trend indicators, and skeleton loaders.
   - `FuseInput` — All-in-one form input component supporting text, password (with show/hide eye toggle), searchable select & multiselect, textarea, radio/checkbox groups, and file dropzone with preview.
   - `FuseFilters` — Data filtering toolbar with multi-column responsive grid, debounced search, active filter state tracking, and clear-all action.
+  - `FuseBreadcrumbs` — Standalone responsive breadcrumb navigation with Lucide icon mapping, auto-scroll on mobile, and reactive global trail state.
+  - `useFuseBreadcrumbs` — Composable to read and dynamically manipulate the active breadcrumb trail from any page or component.
   - `useFuseTheme` — Shared composable for reading and toggling the active theme from anywhere in your app.
 
 ---
@@ -569,7 +571,76 @@ const filterConfigs = [
 
 ---
 
-### 7. `useFuseTheme()` Composable
+### 7. `FuseBreadcrumbs`
+
+A responsive, icon-capable breadcrumb component. Automatically keeps the current page in view on narrow/mobile viewports by smoothly auto-scrolling to the end of the trail. Works either with a local `:items` prop or seamlessly connects to the global reactive trail set via `useFuseBreadcrumbs()`.
+
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `items` | `Array<BreadcrumbItem>` | `undefined` | Array of `[{ label, route \| to, icon }]`. If omitted, automatically uses the trail from `useFuseBreadcrumbs()`. |
+| `icons` | `Object` | `{}` | Icon map allowing items to reference icons by string name (e.g. `{ home: HomeIcon }`). |
+| `linkLast` | `Boolean` | `false` | When `true`, makes the last crumb a clickable link rather than static text. |
+
+#### Slots
+- `#separator`: Custom crumb separator icon or element (defaults to `ChevronRight`).
+
+#### Usage Example:
+
+```vue
+<script setup>
+import { FuseBreadcrumbs } from '@maderobills/fuse-ui'
+import { Home, Users, User } from '@lucide/vue'
+
+const breadcrumbsList = [
+  { label: 'Home', route: '/', icon: Home },
+  { label: 'Students', route: '/students', icon: Users },
+  { label: 'Kwame Mensah', icon: User },
+]
+</script>
+
+<template>
+  <!-- Explicit local items -->
+  <FuseBreadcrumbs :items="breadcrumbsList" />
+
+  <!-- Or standalone, reading from useFuseBreadcrumbs() -->
+  <FuseBreadcrumbs />
+</template>
+```
+
+---
+
+### 8. `useFuseBreadcrumbs()` Composable
+
+A reactive module-level composable that lets any nested view, modal, or tab update the active breadcrumb trail shown in your main layout or header:
+
+```javascript
+import { onMounted } from 'vue'
+import { useFuseBreadcrumbs } from '@maderobills/fuse-ui'
+import { Home, BookOpen } from '@lucide/vue'
+
+const { breadcrumbs, setBreadcrumbs, addBreadcrumb, clearBreadcrumbs } = useFuseBreadcrumbs()
+
+onMounted(() => {
+  // Set the full trail when this page mounts
+  setBreadcrumbs([
+    { label: 'Home', route: '/', icon: Home },
+    { label: 'Courses', route: '/courses', icon: BookOpen },
+    { label: 'Mathematics 101' },
+  ])
+})
+```
+
+| Method / Property | Type | Description |
+| :--- | :--- | :--- |
+| `breadcrumbs` | `DeepReadonly<Ref<BreadcrumbItem[]>>` | Readonly reactive array of the current breadcrumb trail. |
+| `setBreadcrumbs(items)` | `(items: BreadcrumbItem[]) => void` | Replaces the entire active breadcrumb trail. |
+| `addBreadcrumb(item)` | `(item: BreadcrumbItem) => void` | Appends a single item to the end of the trail. |
+| `removeLastBreadcrumb()` | `() => void` | Removes the last item from the trail. |
+| `clearBreadcrumbs()` | `() => void` | Empties the breadcrumb trail. |
+
+---
+
+### 9. `useFuseTheme()` Composable
 
 Use this anywhere in your app to read or change the theme without creating custom wrappers:
 

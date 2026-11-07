@@ -34,7 +34,9 @@ export interface FuseSideBarProps {
 
 export interface BreadcrumbItem {
   label: string
-  route?: string
+  route?: any
+  to?: any
+  icon?: any
 }
 
 export interface FuseGreetBarProps {
@@ -150,6 +152,20 @@ export interface FuseFiltersProps {
   search?: string
 }
 
+export interface FuseBreadcrumbsProps {
+  items?: BreadcrumbItem[]
+  icons?: Record<string, any>
+  linkLast?: boolean
+}
+
+export interface UseFuseBreadcrumbsReturn {
+  breadcrumbs: DeepReadonly<Ref<BreadcrumbItem[]>>
+  setBreadcrumbs: (items: BreadcrumbItem[]) => void
+  addBreadcrumb: (item: BreadcrumbItem) => void
+  removeLastBreadcrumb: () => void
+  clearBreadcrumbs: () => void
+}
+
 export interface UseFuseThemeReturn {
   isDark: DeepReadonly<Ref<boolean>>
   initTheme: () => void
@@ -163,9 +179,11 @@ export declare const FuseThemeToggler: DefineComponent<FuseThemeTogglerProps>
 export declare const FuseStatCard: DefineComponent<FuseStatCardProps>
 export declare const FuseInput: DefineComponent<FuseInputProps>
 export declare const FuseFilters: DefineComponent<FuseFiltersProps>
+export declare const FuseBreadcrumbs: DefineComponent<FuseBreadcrumbsProps>
 
 export declare const FUSE_THEME_KEY: string
 export declare function useFuseTheme(): UseFuseThemeReturn
+export declare function useFuseBreadcrumbs(): UseFuseBreadcrumbsReturn
 
 declare const plugin: Plugin
 export default plugin

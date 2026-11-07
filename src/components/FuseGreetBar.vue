@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { ChevronRight } from '@lucide/vue'
+import { useFuseBreadcrumbs } from '../composables/useFuseBreadcrumbs.js'
 
 const props = defineProps({
   /** Custom page title or header text */
@@ -71,8 +72,11 @@ const computedDescription = computed(() => {
   return ''
 })
 
+const { breadcrumbs: globalBreadcrumbs } = useFuseBreadcrumbs()
+
 const breadcrumbItems = computed(() => {
   if (Array.isArray(props.breadcrumbs)) return props.breadcrumbs
+  if (props.breadcrumbs && globalBreadcrumbs.value.length > 0) return globalBreadcrumbs.value
   if (!props.breadcrumbs || !route) return []
 
   const matched = route.matched?.filter((m) => m.meta?.title || m.name)
