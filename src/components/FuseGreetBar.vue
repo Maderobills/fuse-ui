@@ -56,11 +56,12 @@ const isProfileActive = computed(() => route.path === props.profileRoute)
 
     <!-- Right -->
     <div class="flex items-center gap-3">
+      <slot />
       <slot name="actions" />
       <slot name="theme-toggle" />
 
       <div
-        v-if="$slots['theme-toggle'] && user"
+        v-if="($slots['theme-toggle'] || $slots.default || $slots.actions) && user"
         class="h-4 w-px bg-outline dark:bg-dark-outline opacity-60"
       />
 

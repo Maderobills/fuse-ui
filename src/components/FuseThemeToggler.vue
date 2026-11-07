@@ -8,7 +8,7 @@ const props = defineProps({
   isDark: { type: Boolean, default: undefined },
 })
 
-const emit = defineEmits(['toggle'])
+const emit = defineEmits(['toggle', 'update:isDark', 'update:modelValue'])
 
 const theme = useFuseTheme()
 const controlled = computed(() => props.isDark !== undefined)
@@ -18,6 +18,8 @@ const onClick = () => {
   const next = !dark.value
   if (!controlled.value) theme.setTheme(next)
   emit('toggle', next)
+  emit('update:isDark', next)
+  emit('update:modelValue', next)
 }
 
 onMounted(() => {

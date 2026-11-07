@@ -1,7 +1,9 @@
 import FuseSideBar from './components/FuseSideBar.vue'
-import FuseGreetBar from './components/FuseGreetBar.vue/index.js'
+import FuseGreetBar from './components/FuseGreetBar.vue'
 import FuseThemeToggler from './components/FuseThemeToggler.vue'
-export { FuseSideBar, FuseGreetBar, FuseThemeToggler }
+import { useFuseTheme, FUSE_THEME_KEY } from './composables/useFuseTheme.js'
+
+export { FuseSideBar, FuseGreetBar, FuseThemeToggler, useFuseTheme, FUSE_THEME_KEY }
 
 export default {
   install(app) {
