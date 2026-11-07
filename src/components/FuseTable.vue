@@ -6,7 +6,7 @@ import FuseInput from './FuseInput.vue'
 import TableCell from './internal/TableCell.vue'
 
 const props = defineProps({
-  columns: { type: Array, required: true },
+  columns: { type: Array, default: () => [] },
   rows: { type: Array, default: () => [] },
   rowKey: { type: String, default: 'id' },
   title: { type: String, default: '' },
@@ -46,17 +46,20 @@ const selected = defineModel('selected', { type: Array, default: () => [] })
 const page = defineModel('page', { type: Number, default: 1 })
 
 const ALIGN = { left: 'text-left', center: 'text-center', right: 'text-right' }
-const colAlign = (c) => c.align ?? (c.type === 'actions' ? 'right' : 'left')
+const colAlign = (c) => c?.align ?? (c?.type === 'actions' ? 'right' : 'left')
 
 const isEmpty = (v) => v === null || v === undefined || v === '' || (Array.isArray(v) && v.length === 0)
 const capitalize = (s) => (typeof s === 'string' && s ? s.charAt(0).toUpperCase() + s.slice(1) : s)
-const keyOf = (row, i) => row[props.rowKey] ?? i
+const keyOf = (row, i) => row?.[props.rowKey] ?? i
 
 /* ───────────── Filters ───────────── */
 const activeFilters = ref({})
 const searchQuery = ref('')
 
-const filterableColumns = computed(() => props.columns.filter((c) => c.filterable))
+const safeColumns = computed(() => (Array.isArray(props.columns) ? props.columns : []))
+const safeRows = computed(() => (Array.isArray(props.rows) ? props.rows : []))
+
+const filterableColumns = computed(() => safeColumns.value.filter((c) => c?.filterable))
 const activeFilterKeys = ref(props.filterBy ? [...props.filterBy] : filterableColumns.value.map((c) => c.key))
 
 watch(
@@ -66,16 +69,24 @@ watch(
   },
 )
 
+watch(filterableColumns, (cols) => {
+  if (!props.filterBy && activeFilterKeys.value.length === 0 && cols.length > 0) {
+    activeFilterKeys.value = cols.map((c) => c.key)
+  }
+})
+
 const pickerOptions = computed(() =>
   filterableColumns.value.map((c) => ({ label: c.filterLabel ?? c.label, value: c.key })),
 )
 
 const uniqueOptions = (field, column) => {
   const seen = new Set()
-  for (const r of props.rows) if (!isEmpty(r[field])) seen.add(r[field])
+  for (const r of safeRows.value) {
+    if (r && !isEmpty(r[field])) seen.add(r[field])
+  }
   return [...seen]
     .sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true }))
-    .map((v) => ({ value: v, label: column.labels?.[v] ?? capitalize(String(v)) }))
+    .map((v) => ({ value: v, label: column?.labels?.[v] ?? capitalize(String(v)) }))
 }
 
 const filterConfigs = computed(() =>
@@ -110,8 +121,8 @@ watch(activeFilterKeys, (keys) => {
 const searchFields = computed(
   () =>
     props.searchKeys ??
-    props.columns
-      .filter((c) => !['actions', 'image', 'icon'].includes(c.type))
+    safeColumns.value
+      .filter((c) => c && !['actions', 'image', 'icon'].includes(c.type))
       .flatMap((c) => [c.key, c.subKey].filter(Boolean)),
 )
 
@@ -119,7 +130,7 @@ const searchFields = computed(
 const sort = ref({ key: null, dir: 'asc' })
 
 const toggleSort = (col) => {
-  if (!col.sortable) return
+  if (!col?.sortable) return
   const s = sort.value
   if (s.key !== col.key) sort.value = { key: col.key, dir: 'asc' }
   else if (s.dir === 'asc') sort.value = { key: col.key, dir: 'desc' }
@@ -128,7 +139,7 @@ const toggleSort = (col) => {
 }
 
 const ariaSort = (col) => {
-  if (!col.sortable) return undefined
+  if (!col?.sortable) return undefined
   if (sort.value.key !== col.key) return 'none'
   return sort.value.dir === 'asc' ? 'ascending' : 'descending'
 }
@@ -143,28 +154,28 @@ const compare = (a, b) => {
 
 /* ───────────── Pipeline: search → filter → sort → page ───────────── */
 const processedRows = computed(() => {
-  if (props.manual) return props.rows
-  let list = props.rows
+  if (props.manual) return safeRows.value
+  let list = safeRows.value
 
   const q = searchQuery.value.trim().toLowerCase()
   if (q) {
-    list = list.filter((r) => searchFields.value.some((k) => String(r[k] ?? '').toLowerCase().includes(q)))
+    list = list.filter((r) => searchFields.value.some((k) => String(r?.[k] ?? '').toLowerCase().includes(q)))
   }
 
   for (const [field, val] of Object.entries(activeFilters.value)) {
-    list = list.filter((r) => (Array.isArray(val) ? val.includes(r[field]) : r[field] === val))
+    list = list.filter((r) => (Array.isArray(val) ? val.includes(r?.[field]) : r?.[field] === val))
   }
 
   if (sort.value.key) {
-    const col = props.columns.find((c) => c.key === sort.value.key)
+    const col = safeColumns.value.find((c) => c.key === sort.value.key)
     const dir = sort.value.dir === 'asc' ? 1 : -1
-    const valueOf = (r) => (col?.sortValue ? col.sortValue(r) : r[sort.value.key])
+    const valueOf = (r) => (col?.sortValue ? col.sortValue(r) : r?.[sort.value.key])
     list = [...list].sort((x, y) => dir * compare(valueOf(x), valueOf(y)))
   }
   return list
 })
 
-const totalCount = computed(() => (props.manual ? (props.total ?? props.rows.length) : processedRows.value.length))
+const totalCount = computed(() => (props.manual ? (props.total ?? safeRows.value.length) : processedRows.value.length))
 const pageCount = computed(() => (props.pageSize > 0 ? Math.max(1, Math.ceil(totalCount.value / props.pageSize)) : 1))
 
 const displayRows = computed(() => {
@@ -209,7 +220,7 @@ const toggleRow = (key, checked) => {
 
 /* ───────────── Layout ───────────── */
 const cellPad = computed(() => (props.dense ? 'px-3 py-2' : 'px-4 py-3'))
-const totalCols = computed(() => props.columns.length + (props.selectable ? 1 : 0))
+const totalCols = computed(() => safeColumns.value.length + (props.selectable ? 1 : 0))
 const skeletonRows = computed(() => (props.pageSize > 0 ? Math.min(props.pageSize, 8) : 5))
 const scrolls = computed(() => props.stickyHeader || !!props.maxHeight)
 </script>
@@ -273,7 +284,7 @@ const scrolls = computed(() => props.stickyHeader || !!props.maxHeight)
               </th>
 
               <th
-                v-for="col in columns"
+                v-for="col in safeColumns"
                 :key="col.key"
                 scope="col"
                 :aria-sort="ariaSort(col)"
@@ -308,7 +319,7 @@ const scrolls = computed(() => props.stickyHeader || !!props.maxHeight)
               <tr v-for="n in skeletonRows" :key="`sk-${n}`">
                 <td v-if="selectable" :class="cellPad"><div class="h-4 w-4 rounded-sm bg-muted dark:bg-dark-muted animate-pulse" /></td>
                 <td
-                  v-for="col in columns"
+                  v-for="col in safeColumns"
                   :key="col.key"
                   :class="[cellPad, col.hideOnMobile ? 'hidden md:table-cell' : '']"
                 >
@@ -355,7 +366,7 @@ const scrolls = computed(() => props.stickyHeader || !!props.maxHeight)
                 </td>
 
                 <td
-                  v-for="col in columns"
+                  v-for="col in safeColumns"
                   :key="col.key"
                   class="align-middle"
                   :class="[cellPad, ALIGN[colAlign(col)], col.hideOnMobile ? 'hidden md:table-cell' : '']"
