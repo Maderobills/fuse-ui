@@ -1,6 +1,6 @@
 <script setup>
 import { RouterLink } from 'vue-router'
-import SideBarTooltip from './SidebarTooltip.vue'
+import SideBarTooltip from './SideBarTooltip.vue'
 
 defineProps({
   to: { type: String, required: true },

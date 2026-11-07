@@ -10,7 +10,7 @@ import {
   ChevronDown,
   User as UserIcon,
 } from '@lucide/vue'
-import SideBarTooltip from './internal/SidebarTooltip.vue'
+import SideBarTooltip from './internal/SideBarTooltip.vue'
 import SideBarLink from './internal/SideBarLink.vue'
 
 const props = defineProps({
