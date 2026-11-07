@@ -1,4 +1,5 @@
 import vue from '@vitejs/plugin-vue'
+import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 import { fileURLToPath } from 'node:url'
 import fs from 'node:fs'
@@ -6,12 +7,17 @@ import fs from 'node:fs'
 export default defineConfig({
   plugins: [
     vue(),
+    tailwindcss(),
     {
       name: 'copy-dts',
       closeBundle() {
         fs.copyFileSync(
           new URL('./src/index.d.ts', import.meta.url),
           new URL('./dist/index.d.ts', import.meta.url),
+        )
+        fs.copyFileSync(
+          new URL('./src/assets/theme.css', import.meta.url),
+          new URL('./dist/theme.css', import.meta.url),
         )
       },
     },

@@ -10,7 +10,9 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    }
+    },
+    "./dist/theme.css": "./dist/theme.css",
+    "./theme.css": "./dist/theme.css"
   },
   "files": [
     "dist"
@@ -27,7 +29,9 @@
   },
   "devDependencies": {
     "@lucide/vue": "^1.68.0",
+    "@tailwindcss/vite": "^4.3.5",
     "@vitejs/plugin-vue": "^6.0.10",
+    "tailwindcss": "^4.3.5",
     "vite": "^8.3.5",
     "vue-router": "^5.4.0"
   },
