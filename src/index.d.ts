@@ -129,6 +129,27 @@ export interface FuseInputProps {
   icon?: any | boolean
 }
 
+export interface FilterConfig {
+  key: string
+  label: string
+  options: InputOption[]
+  placeholder?: string
+  searchable?: boolean
+  multiple?: boolean
+  clearable?: boolean
+}
+
+export interface FuseFiltersProps {
+  filters?: FilterConfig[]
+  showSearch?: boolean
+  searchPlaceholder?: string
+  debounce?: number
+  gridCols?: 1 | 2 | 3 | 4 | 5 | 6
+  clearLabel?: string
+  modelValue?: Record<string, any>
+  search?: string
+}
+
 export interface UseFuseThemeReturn {
   isDark: DeepReadonly<Ref<boolean>>
   initTheme: () => void
@@ -141,6 +162,7 @@ export declare const FuseGreetBar: DefineComponent<FuseGreetBarProps>
 export declare const FuseThemeToggler: DefineComponent<FuseThemeTogglerProps>
 export declare const FuseStatCard: DefineComponent<FuseStatCardProps>
 export declare const FuseInput: DefineComponent<FuseInputProps>
+export declare const FuseFilters: DefineComponent<FuseFiltersProps>
 
 export declare const FUSE_THEME_KEY: string
 export declare function useFuseTheme(): UseFuseThemeReturn

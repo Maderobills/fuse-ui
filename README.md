@@ -10,10 +10,11 @@ A sleek, responsive, and customizable Vue 3 UI component suite crafted for moder
 - **🎨 Built-in Dark Mode & Theming** — Seamless light and dark mode powered by Tailwind CSS tokens, with an animated Sun/Moon toggle.
 - **🧩 Core Components**:
   - `FuseSideBar` — Collapsible navigation sidebar with submenus, tooltips in collapsed view, user profile summary, and role badges.
-  - `FuseGreetBar` — Clean top app bar with time-based dynamic greetings ("Good morning, Kwame"), profile navigation, and action slots.
+  - `FuseGreetBar` — Contextual top bar with page titles, descriptions, dynamic greetings ("Good morning" or "Welcome back"), breadcrumbs, and user profile navigation.
   - `FuseThemeToggler` — Animated smooth theme switcher (supports standalone self-management or controlled `v-model`).
   - `FuseStatCard` — KPI and metrics card with automated currency formatting, compact notations (e.g. `1.2M`), tone color-coding, trend indicators, and skeleton loaders.
   - `FuseInput` — All-in-one form input component supporting text, password (with show/hide eye toggle), searchable select & multiselect, textarea, radio/checkbox groups, and file dropzone with preview.
+  - `FuseFilters` — Data filtering toolbar with multi-column responsive grid, debounced search, active filter state tracking, and clear-all action.
   - `useFuseTheme` — Shared composable for reading and toggling the active theme from anywhere in your app.
 
 ---
@@ -172,11 +173,13 @@ const roleOptions = [
 
     <!-- Main Content Area -->
     <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
-      <!-- Top Bar -->
-      <FuseGreetBar :user="currentUser" greeting>
-        <template #theme-toggle>
-          <FuseThemeToggler />
-        </template>
+      <!-- Top Bar with Title & Description -->
+      <FuseGreetBar
+        title="Dashboard"
+        description="Welcome to your school management system."
+        :user="currentUser"
+      >
+        <FuseThemeToggler />
       </FuseGreetBar>
 
       <!-- Dashboard View -->
@@ -462,7 +465,111 @@ An all-in-one input component supporting text fields, secure passwords with togg
 
 ---
 
-### 6. `useFuseTheme()` Composable
+### 6. `FuseFilters`
+
+A responsive data and table filtering toolbar. Handles search inputs with optional debouncing, multi-column filter select dropdowns, active state management (only non-empty filters are stored in the model), and a "Clear All Filters" button.
+
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `filters` | `Array<FilterConfig>` | `[]` | Array of filter definitions: `[{ key, label, options: [{ label, value }], placeholder?, searchable?, multiple?, clearable? }]`. |
+| `v-model` | `Object` | `{}` | Two-way binding for active filter values `{ [key]: value }`. Automatically deletes cleared keys. |
+| `v-model:search` | `String` | `''` | Two-way binding for the search input value. |
+| `showSearch` | `Boolean` | `false` | Displays the top search bar. |
+| `searchPlaceholder` | `String` | `'Search...'` | Placeholder text for the search input. |
+| `debounce` | `Number` | `0` | Delay in milliseconds before emitting `@search-change` (e.g. `300`). |
+| `gridCols` | `Number` | `4` | Number of columns for the filter grid on desktop (`1` to `6`). |
+| `clearLabel` | `String` | `'Clear All Filters'` | Text shown on the reset button. |
+
+#### Events
+- `@filter-change`: Emitted when any filter selection changes, payload: `{ ...activeFilters }`.
+- `@search-change`: Emitted on search keystroke (debounced if `debounce > 0`), payload: `query`.
+- `@clear-filters`: Emitted when the "Clear All Filters" button is clicked.
+
+#### Slots
+- `default`: Allows injecting additional custom inputs (e.g. `<FuseInput type="date" />`) directly into the filter grid.
+- `#actions`: Additional action buttons placed in the bottom bar next to the clear button (e.g. "Export", "Refresh").
+
+#### Usage Example:
+
+```vue
+<script setup>
+import { ref } from 'vue'
+import { FuseFilters, FuseInput } from '@maderobills/fuse-ui'
+
+const activeFilters = ref({})
+const searchQuery = ref('')
+const selectedDate = ref('')
+
+const filterConfigs = [
+  {
+    key: 'status',
+    label: 'Status',
+    options: [
+      { label: 'Active', value: 'active' },
+      { label: 'Pending', value: 'pending' },
+      { label: 'Suspended', value: 'suspended' },
+    ],
+  },
+  {
+    key: 'department',
+    label: 'Department',
+    searchable: true,
+    options: [
+      { label: 'Engineering', value: 'eng' },
+      { label: 'Design', value: 'des' },
+      { label: 'Marketing', value: 'mkt' },
+    ],
+  },
+  {
+    key: 'tags',
+    label: 'Tags',
+    multiple: true,
+    options: [
+      { label: 'Full-time', value: 'ft' },
+      { label: 'Remote', value: 'remote' },
+      { label: 'Contract', value: 'contract' },
+    ],
+  },
+]
+</script>
+
+<template>
+  <FuseFilters
+    show-search
+    search-placeholder="Search users by name, email..."
+    :debounce="300"
+    :filters="filterConfigs"
+    :grid-cols="4"
+    v-model="activeFilters"
+    v-model:search="searchQuery"
+    @filter-change="(filters) => console.log('Active filters:', filters)"
+    @search-change="(query) => console.log('Search query:', query)"
+  >
+    <!-- Inject extra controls directly into the filter grid -->
+    <FuseInput
+      type="date"
+      label="Created Date"
+      v-model="selectedDate"
+      clearable
+    />
+
+    <!-- Extra action buttons next to Clear All -->
+    <template #actions>
+      <button
+        type="button"
+        class="px-3 py-2 text-sm font-medium border border-outline dark:border-dark-outline rounded-sm hover:bg-muted dark:hover:bg-dark-muted transition-colors"
+        @click="console.log('Export CSV')"
+      >
+        Export CSV
+      </button>
+    </template>
+  </FuseFilters>
+</template>
+```
+
+---
+
+### 7. `useFuseTheme()` Composable
 
 Use this anywhere in your app to read or change the theme without creating custom wrappers:
 

@@ -3,10 +3,11 @@ import FuseGreetBar from './components/FuseGreetBar.vue'
 import FuseThemeToggler from './components/FuseThemeToggler.vue'
 import FuseStatCard from './components/FuseStatCard.vue'
 import FuseInput from './components/FuseInput.vue'
+import FuseFilters from './components/FuseFilters.vue'
 
 import { useFuseTheme, FUSE_THEME_KEY } from './composables/useFuseTheme.js'
 
-export { FuseSideBar, FuseGreetBar, FuseThemeToggler, FuseInput, FuseStatCard, useFuseTheme, FUSE_THEME_KEY }
+export { FuseSideBar, FuseGreetBar, FuseThemeToggler, FuseInput, FuseStatCard, FuseFilters, useFuseTheme, FUSE_THEME_KEY }
 
 export default {
   install(app) {
@@ -15,6 +16,7 @@ export default {
     app.component('FuseThemeToggler', FuseThemeToggler)
     app.component('FuseStatCard', FuseStatCard)
     app.component('FuseInput', FuseInput)
+    app.component('FuseFilters', FuseFilters)
 
   },
 }
