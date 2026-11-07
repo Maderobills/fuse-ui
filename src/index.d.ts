@@ -32,10 +32,20 @@ export interface FuseSideBarProps {
   expanded?: boolean
 }
 
+export interface BreadcrumbItem {
+  label: string
+  route?: string
+}
+
 export interface FuseGreetBarProps {
+  title?: string
+  description?: string
+  greeting?: boolean
+  greetingPrefix?: string
+  breadcrumbs?: BreadcrumbItem[] | boolean
+  autoRoute?: boolean
   user?: FuseUser | null
   profileRoute?: string
-  greeting?: boolean
   mobileMenuOffset?: boolean
 }
 

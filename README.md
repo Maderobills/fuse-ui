@@ -276,17 +276,55 @@ const roleOptions = [
 
 ### 2. `FuseGreetBar`
 
+The top navigation and context bar. It automatically or manually displays page titles, route descriptions, time-aware greetings, breadcrumbs, action slots, theme toggles, and user profile links.
+
 | Prop | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `user` | `Object` | `null` | `{ name, email, avatar }` used for greeting and profile pill. |
-| `profileRoute` | `String` | `'/profile'` | Destination when clicking user avatar pill on the right. |
-| `greeting` | `Boolean` | `false` | Shows "Good morning / afternoon / evening, Name" on the left. |
-| `mobileMenuOffset` | `Boolean` | `true` | Adds `pl-12 lg:pl-0` so the fixed mobile menu button doesn't cover text. |
+| `title` | `String` | `''` | Explicit page title or nav heading. |
+| `description` | `String` | `''` | Subtitle or page description text beneath the title. |
+| `greeting` | `Boolean` | `false` | When `true`, displays a personalized greeting (e.g., "Good morning, School Administrator!"). |
+| `greetingPrefix` | `String` | `''` | Custom prefix (e.g. `'Welcome back'`) replacing the time-based greeting. |
+| `breadcrumbs` | `Array \| Boolean` | `false` | Array of `[{ label, route }]`, or `true` to auto-generate from active route. |
+| `autoRoute` | `Boolean` | `true` | When `title` and `greeting` are omitted, auto-derives title & description from `route.meta` or `route.name`. |
+| `user` | `Object` | `null` | `{ name, email, avatar }` used for greetings and right profile pill. |
+| `profileRoute` | `String` | `'/profile'` | Destination when clicking the user profile pill. |
+| `mobileMenuOffset` | `Boolean` | `true` | Adds `pl-12 lg:pl-0` so the fixed mobile menu hamburger doesn't overlap text. |
+
+#### Usage Examples:
+
+```vue
+<!-- 1. Explicit Page Title with Description -->
+<FuseGreetBar
+  title="Dashboard"
+  description="Welcome to your school management system."
+  :user="currentUser"
+/>
+
+<!-- 2. Personalized Welcome Greeting with Subtitle -->
+<FuseGreetBar
+  greeting
+  greeting-prefix="Welcome back"
+  description="Here is an overview of your school."
+  :user="currentUser"
+>
+  <template #theme-toggle>
+    <FuseThemeToggler />
+  </template>
+</FuseGreetBar>
+
+<!-- 3. Auto-Derived from Vue Router (with breadcrumbs) -->
+<!-- Uses route.meta.title and route.meta.description automatically -->
+<FuseGreetBar
+  breadcrumbs
+  :user="currentUser"
+/>
+```
 
 #### Slots
-- `#left`: Overrides default greeting text (e.g., page title or breadcrumbs).
-- `#actions`: Extra buttons, search bars, or notification bells.
-- `#theme-toggle`: Right-aligned slot for `<FuseThemeToggler />`.
+- `#left="{ title, description, breadcrumbs }"`: Completely customizes the left header content.
+- `#title-badge`: Renders a badge or pill right beside the title (e.g. `v1.0`, status pill).
+- `#actions`: Extra action buttons, search bar, or notification bells.
+- `#theme-toggle`: Dedicated slot for `<FuseThemeToggler />`.
 - `default`: Anything placed directly inside `<FuseGreetBar>...</FuseGreetBar>` renders in the right actions area.
 
 ---
