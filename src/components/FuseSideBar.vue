@@ -48,7 +48,7 @@ const openSubmenus = ref([])
 const getItemPath = (item) => item.route || item.path || (item.id ? `/${item.id}` : '#')
 const getItemKey = (item, idx) => item.route || item.path || item.id || item.label || String(idx)
 const capitalize = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : '')
-const isPathActive = (p) => route.path === p || (p !== '/' && route.path.startsWith(p + '/'))
+const isPathActive = (p) => (route?.path ? route.path === p || (p !== '/' && route.path.startsWith(p + '/')) : false)
 const isMenuItemActive = (item) =>
   item.children?.length ? item.children.some((c) => isPathActive(getItemPath(c))) : isPathActive(getItemPath(item))
 
@@ -92,7 +92,7 @@ const handleResize = () => {
   if (window.innerWidth < 1024) isExpanded.value = true
 }
 
-watch(() => route.path, initializeSubmenus)
+watch(() => route?.path, initializeSubmenus)
 onMounted(() => {
   handleResize()
   initializeSubmenus()
@@ -196,7 +196,7 @@ onUnmounted(() => window.removeEventListener('resize', handleResize))
             class="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all duration-200 hover:bg-muted dark:hover:bg-dark-muted group relative"
             :class="[
               isExpanded ? '' : 'lg:justify-center lg:px-0',
-              route.path === profileRoute ? 'bg-primary/10 dark:bg-dark-primary/10 border border-primary/20 dark:border-dark-primary/20' : '',
+              route?.path === profileRoute ? 'bg-primary/10 dark:bg-dark-primary/10 border border-primary/20 dark:border-dark-primary/20' : '',
             ]"
           >
             <img
