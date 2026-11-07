@@ -6,3 +6,4 @@ import './assets/theme.css'
 const app = createApp(App)
 app.use(FuseUI)
 app.mount('#app')
+
