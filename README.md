@@ -16,6 +16,7 @@ A sleek, responsive, and customizable Vue 3 UI component suite crafted for moder
   - `FuseInput` — All-in-one form input component supporting text, password (with show/hide eye toggle), searchable select & multiselect, textarea, radio/checkbox groups, and file dropzone with preview.
   - `FuseFilters` — Data filtering toolbar with multi-column responsive grid, debounced search, active filter state tracking, and clear-all action.
   - `FuseBreadcrumbs` — Standalone responsive breadcrumb navigation with Lucide icon mapping, auto-scroll on mobile, and reactive global trail state.
+  - `FuseTable` — High-performance data table with sorting, multi-select checkboxes, pagination, skeleton loading, rich cell types (badges, avatars, actions), and integrated `FuseFilters`.
   - `useFuseBreadcrumbs` — Composable to read and dynamically manipulate the active breadcrumb trail from any page or component.
   - `useFuseTheme` — Shared composable for reading and toggling the active theme from anywhere in your app.
 
@@ -609,7 +610,162 @@ const breadcrumbsList = [
 
 ---
 
-### 8. `useFuseBreadcrumbs()` Composable
+### 8. `FuseTable`
+
+A feature-complete data table designed for SaaS products and admin dashboards. Out of the box, it provides client or server-side pagination, sorting, row selection (with bulk actions), automatic `FuseFilters` integration, customizable empty states, loading skeletons, and specialized cell types.
+
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `columns` | `Array<TableColumn>` | *required* | Array of column definitions (see Column Options below). |
+| `rows` | `Array<Object>` | `[]` | Array of row data objects. |
+| `rowKey` | `String` | `'id'` | Unique identifier field in each row object. |
+| `title` | `String` | `''` | Table header card title. |
+| `loading` | `Boolean` | `false` | Displays animated skeleton pulse rows. |
+| `emptyText` | `String` | `'No records found'` | Primary text shown when no rows match. |
+| `emptyDescription`| `String` | `''` | Secondary help text in empty state. |
+| `striped` | `Boolean` | `false` | Alternates background shading on even rows. |
+| `hover` | `Boolean` | `true` | Highlights row on hover. |
+| `dense` | `Boolean` | `false` | Compact cell padding (`px-3 py-2` instead of `px-4 py-3`). |
+| `stickyHeader` | `Boolean` | `false` | Keeps `<thead>` fixed while scrolling table body. |
+| `maxHeight` | `String` | `''` | Constrains table height with vertical scroll (e.g. `'28rem'`). |
+| `rowClickable` | `Boolean` | `false` | Makes entire row interactive and emits `@row-click`. |
+| `selectable` | `Boolean` | `false` | Displays row checkboxes and a "select-all" header checkbox. |
+| `pageSize` | `Number` | `0` | Number of rows per page (`0` = disables pagination). |
+| `manual` | `Boolean` | `false` | Server-side mode: disables client-side filtering, sorting, and slicing. |
+| `total` | `Number` | `null` | Total row count when using server-side (`manual`) pagination. |
+| `filterable` | `Boolean` | `false` | Automatically generates and displays `FuseFilters` above the table. |
+| `filterBy` | `Array<String>` | `null` | Column keys to display as dropdown filters (defaults to all columns with `filterable: true`). |
+| `filterPicker` | `Boolean` | `false` | Renders a multiselect allowing users to pick which column filters appear. |
+| `filterCols` | `Number` | `4` | Number of columns in the filter grid (`1` to `6`). |
+| `searchable` | `Boolean` | `false` | Shows a search input in the filter bar. |
+| `searchPlaceholder`| `String` | `'Search...'` | Search input placeholder text. |
+| `searchKeys` | `Array<String>` | `null` | Specific fields searched by the search bar (defaults to all text columns). |
+| `searchDebounce` | `Number` | `0` | Search debounce delay in milliseconds. |
+| `v-model:selected` | `Array` | `[]` | Array of selected row keys. |
+| `v-model:page` | `Number` | `1` | Current page number. |
+
+#### Column Configuration Options (`TableColumn`)
+
+| Option | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `key` | `String` | *required* | Property key in the row object. |
+| `label` | `String` | *required* | Header label displayed for the column. |
+| `type` | `String` | `'text'` | Built-in cell renderer: `'text'`, `'badge'`, `'avatar'`, `'actions'`, `'money'`, `'date'`, `'boolean'`, `'number'`. |
+| `subKey` | `String` | `undefined` | Secondary property key shown as a muted subtitle below the primary value. |
+| `sortable` | `Boolean` | `false` | Enables sorting on this column. |
+| `sortValue` | `Function` | `undefined` | Custom extractor `(row) => value` for sorting complex objects. |
+| `filterable` | `Boolean` | `false` | Automatically extracts unique options and builds a dropdown filter. |
+| `filterOptions`| `Array` | `undefined` | Custom options `[{ label, value }]` for the filter dropdown. |
+| `align` | `'left' \| 'center' \| 'right'` | `'left'` | Column text alignment (defaults to `'right'` for `'actions'`). |
+| `width` | `String` | `undefined` | CSS column width (e.g. `'140px'`). |
+| `hideOnMobile` | `Boolean` | `false` | Hides column on smaller screens (`hidden md:table-cell`). |
+| `actions` | `Array \| Function` | `[]` | Array of actions `[{ name, label, icon, tone }]` when `type="actions"`. |
+| `badgeTone` | `Object \| Function`| `undefined` | Maps cell values to tones (`'primary'`, `'success'`, `'warning'`, `'error'`, `'info'`). |
+
+#### Slots
+- `#cell-{key}="{ row, value, column, index }"`: Custom template for any specific column cell.
+- `#toolbar`: Top right toolbar next to the table title (e.g. "Add User" button).
+- `#filters-actions`: Actions inside the filter toolbar.
+- `#bulk="{ selected }"`: Bulk action buttons shown when rows are selected.
+- `#empty`: Custom empty state layout.
+
+#### Events
+- `@action`: Emitted with `{ action, row }` when an action button is clicked.
+- `@row-click`: Emitted with `row` when a row is clicked (requires `rowClickable: true`).
+- `@sort-change`: Emitted with `{ key, dir }` on sort.
+- `@filter-change`: Emitted with active filters `{ ...filters }`.
+- `@search-change`: Emitted with search text.
+- `@page-change`: Emitted with new page number.
+
+#### Usage Example:
+
+```vue
+<script setup>
+import { ref } from 'vue'
+import { FuseTable } from '@maderobills/fuse-ui'
+import { Eye, Trash2, Plus } from '@lucide/vue'
+
+const selectedRows = ref([])
+const currentPage = ref(1)
+
+const columns = [
+  { key: 'name', label: 'Student', subKey: 'email', sortable: true },
+  {
+    key: 'status',
+    label: 'Status',
+    type: 'badge',
+    filterable: true,
+    badgeTone: {
+      active: 'success',
+      pending: 'warning',
+      suspended: 'error',
+    },
+  },
+  { key: 'grade', label: 'Grade', sortable: true, align: 'center' },
+  { key: 'balance', label: 'Fees Due', type: 'money', sortable: true, align: 'right' },
+  {
+    key: 'actions',
+    label: 'Actions',
+    type: 'actions',
+    actions: [
+      { name: 'view', label: 'View', icon: Eye, tone: 'neutral' },
+      { name: 'delete', label: 'Delete', icon: Trash2, tone: 'error' },
+    ],
+  },
+]
+
+const students = [
+  { id: 1, name: 'Kwame Mensah', email: 'kwame@school.edu', status: 'active', grade: 'Grade 10', balance: 0 },
+  { id: 2, name: 'Ama Osei', email: 'ama@school.edu', status: 'pending', grade: 'Grade 11', balance: 450 },
+  { id: 3, name: 'Kofi Boateng', email: 'kofi@school.edu', status: 'suspended', grade: 'Grade 9', balance: 1200 },
+]
+
+const handleAction = ({ action, row }) => {
+  console.log(`Action: ${action.name} on row:`, row)
+}
+</script>
+
+<template>
+  <FuseTable
+    title="Enrolled Students"
+    :columns="columns"
+    :rows="students"
+    :page-size="10"
+    v-model:page="currentPage"
+    selectable
+    v-model:selected="selectedRows"
+    filterable
+    searchable
+    @action="handleAction"
+  >
+    <!-- Top toolbar button -->
+    <template #toolbar>
+      <button
+        type="button"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white rounded-sm text-xs font-medium hover:bg-primary/90 transition-colors"
+      >
+        <Plus class="w-3.5 h-3.5" />
+        <span>Add Student</span>
+      </button>
+    </template>
+
+    <!-- Bulk actions bar when rows are selected -->
+    <template #bulk="{ selected }">
+      <button
+        type="button"
+        class="px-2.5 py-1 text-xs font-medium text-error bg-error/10 border border-error/30 rounded-sm hover:bg-error/20 transition-colors"
+        @click="console.log('Delete selected:', selected)"
+      >
+        Delete Selected ({{ selected.length }})
+      </button>
+    </template>
+  </FuseTable>
+</template>
+```
+
+---
+
+### 9. `useFuseBreadcrumbs()` Composable
 
 A reactive module-level composable that lets any nested view, modal, or tab update the active breadcrumb trail shown in your main layout or header:
 
@@ -640,7 +796,7 @@ onMounted(() => {
 
 ---
 
-### 9. `useFuseTheme()` Composable
+### 10. `useFuseTheme()` Composable
 
 Use this anywhere in your app to read or change the theme without creating custom wrappers:
 

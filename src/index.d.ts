@@ -158,6 +158,66 @@ export interface FuseBreadcrumbsProps {
   linkLast?: boolean
 }
 
+export interface TableAction {
+  name: string
+  label?: string
+  icon?: any
+  tone?: 'neutral' | 'primary' | 'success' | 'warning' | 'error' | 'info'
+  [key: string]: any
+}
+
+export interface TableColumn {
+  key: string
+  label: string
+  type?: 'text' | 'badge' | 'avatar' | 'actions' | 'money' | 'date' | 'boolean' | 'number'
+  subKey?: string
+  format?: (value: any, row: any) => string
+  align?: 'left' | 'center' | 'right'
+  width?: string
+  sortable?: boolean
+  sortValue?: (row: any) => any
+  filterable?: boolean
+  filterKey?: string
+  filterLabel?: string
+  filterOptions?: Array<{ label: string; value: any }>
+  filterMultiple?: boolean
+  filterSearchable?: boolean
+  hideOnMobile?: boolean
+  actions?: TableAction[] | ((row: any) => TableAction[])
+  badgeTone?: Record<string, string> | ((value: any, row: any) => string)
+  [key: string]: any
+}
+
+export interface FuseTableProps {
+  columns: TableColumn[]
+  rows?: any[]
+  rowKey?: string
+  title?: string
+  loading?: boolean
+  emptyText?: string
+  emptyDescription?: string
+  striped?: boolean
+  hover?: boolean
+  dense?: boolean
+  stickyHeader?: boolean
+  maxHeight?: string
+  rowClickable?: boolean
+  selectable?: boolean
+  pageSize?: number
+  manual?: boolean
+  total?: number | null
+  filterable?: boolean
+  filterBy?: string[] | null
+  filterPicker?: boolean
+  filterCols?: number
+  searchable?: boolean
+  searchPlaceholder?: string
+  searchKeys?: string[] | null
+  searchDebounce?: number
+  selected?: any[]
+  page?: number
+}
+
 export interface UseFuseBreadcrumbsReturn {
   breadcrumbs: DeepReadonly<Ref<BreadcrumbItem[]>>
   setBreadcrumbs: (items: BreadcrumbItem[]) => void
@@ -180,8 +240,10 @@ export declare const FuseStatCard: DefineComponent<FuseStatCardProps>
 export declare const FuseInput: DefineComponent<FuseInputProps>
 export declare const FuseFilters: DefineComponent<FuseFiltersProps>
 export declare const FuseBreadcrumbs: DefineComponent<FuseBreadcrumbsProps>
+export declare const FuseTable: DefineComponent<FuseTableProps>
 
 export declare const FUSE_THEME_KEY: string
+export declare const FUSE_BREADCRUMBS_KEY: string
 export declare function useFuseTheme(): UseFuseThemeReturn
 export declare function useFuseBreadcrumbs(): UseFuseBreadcrumbsReturn
 

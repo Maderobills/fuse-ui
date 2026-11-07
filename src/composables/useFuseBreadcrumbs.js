@@ -1,5 +1,7 @@
 import { shallowRef, readonly } from 'vue'
 
+export const FUSE_BREADCRUMBS_KEY = 'fuse-breadcrumbs'
+
 // Module-level, so every page and the layout share one trail.
 // shallowRef: icon components must not be made deeply reactive.
 const breadcrumbs = shallowRef([])
