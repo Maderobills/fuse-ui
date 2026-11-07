@@ -430,11 +430,11 @@ const { isDark, toggleTheme, setTheme } = useFuseTheme()
               Run this command in your project terminal:
             </p>
             <div class="bg-black/90 text-emerald-400 p-3.5 rounded-xl text-xs font-mono flex items-center justify-between">
-              <code>npm install @maderobills/fuse-ui</code>
+              <code>npm install github:Maderobills/fuse-ui</code>
               <button
                 type="button"
                 class="px-2 py-1 text-[11px] rounded bg-white/10 text-white hover:bg-white/20 transition-colors"
-                @click="copyCode('npm install @maderobills/fuse-ui', 'install')"
+                @click="copyCode('npm install github:Maderobills/fuse-ui', 'install')"
               >
                 {{ copiedKey === 'install' ? 'Copied!' : 'Copy' }}
               </button>

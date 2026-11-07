@@ -303,3 +303,4 @@ export const getFilteredNavItems = (query = '', role = null) => {
 }
 
 export default navItems
+
