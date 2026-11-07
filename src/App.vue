@@ -97,6 +97,13 @@ const greetStyle = ref('title') // 'title' | 'greeting' | 'custom' | 'route'
 const greetPrefix = ref('Welcome back')
 const showGreetBreadcrumbs = ref(true)
 
+const greetVariations = [
+  { id: 'title', label: '1. Title & Description Mode' },
+  { id: 'greeting', label: '2. Greeting Mode (Good morning)' },
+  { id: 'custom', label: '3. Custom Greeting Prefix' },
+  { id: 'crumbs', label: '4. With Auto Breadcrumbs' },
+]
+
 // ─────────────────────────────────────────────────────────────
 // 2. STATCARD DEMO STATE
 // ─────────────────────────────────────────────────────────────
@@ -560,12 +567,7 @@ const { isDark, toggleTheme, setTheme } = useFuseTheme()
           <div class="flex flex-wrap items-center gap-2 p-3 bg-surface dark:bg-dark-surface border border-outline dark:border-dark-outline rounded-xl">
             <span class="text-xs font-bold text-foreground/60 dark:text-dark-foreground/60 mr-2">Try Different Variations:</span>
             <button
-              v-for="mode in [
-                { id: 'title', label: '1. Title & Description Mode' },
-                { id: 'greeting', label: '2. Greeting Mode ("Good morning")' },
-                { id: 'custom', label: '3. Custom Greeting Prefix' },
-                { id: 'crumbs', label: '4. With Auto Breadcrumbs' },
-              ]"
+              v-for="mode in greetVariations"
               :key="mode.id"
               type="button"
               class="px-3 py-1.5 text-xs font-medium rounded-lg transition-all"
