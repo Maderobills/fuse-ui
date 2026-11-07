@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
   FuseSideBar,
@@ -25,13 +25,10 @@ import {
   Filter,
   FolderTree,
   Sun,
-  Moon,
   Zap,
-  ShieldCheck,
   CheckCircle2,
   DollarSign,
   Users,
-  GraduationCap,
   TrendingUp,
   TrendingDown,
   Eye,
@@ -45,13 +42,8 @@ import {
   Copy,
   Check,
   Info,
-  AlertTriangle,
   Layers,
   ChevronRight,
-  Sliders,
-  Upload,
-  RefreshCw,
-  LogOut,
   SlidersHorizontal,
   Palette,
   Terminal,
@@ -59,7 +51,8 @@ import {
   CheckSquare,
   Shield,
   Lightbulb,
-  ExternalLink,
+  RefreshCw,
+  KeyRound,
 } from '@lucide/vue'
 
 // ─────────────────────────────────────────────────────────────
@@ -68,7 +61,6 @@ import {
 const route = useRoute()
 const router = useRouter()
 
-// Derive active tab from route meta id or default to 'whats-new'
 const activeTab = computed(() => {
   return route?.meta?.id || 'whats-new'
 })
@@ -82,6 +74,21 @@ const handleSidebarNavigate = (item) => {
 }
 
 // ─────────────────────────────────────────────────────────────
+// PREVIEW / CODE SWITCHER STATE FOR DEMOS
+// ─────────────────────────────────────────────────────────────
+const demoView = ref({
+  greetbar: 'preview',
+  table: 'preview',
+  statcard: 'preview',
+  input: 'preview',
+  filters: 'preview',
+  breadcrumbs1: 'preview',
+  breadcrumbs2: 'preview',
+  rbac: 'preview',
+  theming: 'preview',
+})
+
+// ─────────────────────────────────────────────────────────────
 // USER PROFILE STATE
 // ─────────────────────────────────────────────────────────────
 const currentUser = ref({
@@ -91,7 +98,6 @@ const currentUser = ref({
   avatar: 'https://i.pravatar.cc/150?u=mbills',
 })
 
-// Role switcher for RBAC demo
 const currentDemoRole = ref('admin')
 const availableRoles = [
   { label: 'Admin (Full Access)', value: 'admin' },
@@ -118,7 +124,6 @@ const copyCode = (codeText, key) => {
 // 1. GREETBAR DEMO STATE
 // ─────────────────────────────────────────────────────────────
 const greetStyle = ref('title')
-const greetPrefix = ref('Welcome back')
 const greetVariations = [
   { id: 'title', label: '1. Title & Description Mode' },
   { id: 'greeting', label: '2. Greeting Mode (Good morning)' },
@@ -133,7 +138,7 @@ const statLoading = ref(false)
 const statCurrency = ref('GHS')
 
 // ─────────────────────────────────────────────────────────────
-// 3. INPUT DEMO STATE (All 15+ variations)
+// 3. INPUT DEMO STATE
 // ─────────────────────────────────────────────────────────────
 const formState = ref({
   fullName: 'Ama Mensah',
@@ -248,7 +253,7 @@ const handleTableAction = ({ action, row }) => {
 // ─────────────────────────────────────────────────────────────
 // 6. BREADCRUMBS DEMO STATE
 // ─────────────────────────────────────────────────────────────
-const { breadcrumbs: globalCrumbs, setBreadcrumbs, addBreadcrumb, removeLastBreadcrumb } = useFuseBreadcrumbs()
+const { breadcrumbs: globalCrumbs, setBreadcrumbs, addBreadcrumb } = useFuseBreadcrumbs()
 
 const staticCrumbItems = [
   { label: 'Documentation Hub', route: '/docs/whats-new', icon: BookOpen },
@@ -256,18 +261,10 @@ const staticCrumbItems = [
   { label: 'FuseTable Guide' },
 ]
 
-const resetDynamicCrumbs = () => {
-  setBreadcrumbs([
-    { label: 'Documentation', route: '/docs/whats-new' },
-    { label: 'Components', route: '/docs/components/sidebar' },
-    { label: 'Interactive Playground' },
-  ])
-}
-
 // ─────────────────────────────────────────────────────────────
 // 7. THEME COMPOSABLE
 // ─────────────────────────────────────────────────────────────
-const { isDark, toggleTheme, setTheme } = useFuseTheme()
+const { isDark, toggleTheme } = useFuseTheme()
 </script>
 
 <template>
@@ -318,7 +315,6 @@ const { isDark, toggleTheme, setTheme } = useFuseTheme()
         <!-- VIEW 1: WHAT'S NEW & OVERVIEW                             -->
         <!-- ========================================================= -->
         <div v-if="activeTab === 'whats-new'" class="space-y-10">
-          <!-- Hero Banner -->
           <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary/95 to-slate-900 text-white p-6 md:p-10 shadow-lg">
             <div class="relative z-10 max-w-3xl space-y-4">
               <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white backdrop-blur-md text-xs font-medium border border-white/20">
@@ -329,7 +325,7 @@ const { isDark, toggleTheme, setTheme } = useFuseTheme()
                 Enterprise Vue 3 UI Made Simple for Everyone
               </h1>
               <p class="text-sm md:text-base text-slate-200 leading-relaxed">
-                Whether you are a seasoned software engineer or non-technical business builder, Fuse-UI provides ready-to-use, accessible, and beautifully styled dashboard components. No complicated setup, no breaking changes.
+                Whether you are a seasoned software engineer or non-technical business builder, Fuse-UI provides ready-to-use, accessible, and beautifully styled dashboard components with live interactive previews and code inspection.
               </p>
               <div class="pt-2 flex flex-wrap gap-3">
                 <button
@@ -353,7 +349,6 @@ const { isDark, toggleTheme, setTheme } = useFuseTheme()
             <div class="absolute -right-10 -bottom-10 w-96 h-96 bg-secondary/20 rounded-full blur-3xl pointer-events-none"></div>
           </div>
 
-          <!-- Feature Cards Grid -->
           <section class="space-y-4">
             <div class="flex items-center gap-2">
               <div class="w-8 h-8 rounded-lg bg-secondary/10 dark:bg-dark-secondary/10 flex items-center justify-center text-secondary dark:text-dark-secondary">
@@ -562,7 +557,7 @@ const { isDark, toggleTheme, setTheme } = useFuseTheme()
             </p>
           </div>
 
-          <!-- Why & When to Use Callout (Tailwind / Vue Docs Style) -->
+          <!-- Why & When to Use Callout -->
           <div class="p-5 rounded-xl border border-primary/20 bg-primary/5 dark:bg-dark-primary/10 space-y-2">
             <h3 class="text-xs font-bold uppercase tracking-wider text-primary dark:text-dark-primary flex items-center gap-1.5">
               <Info class="w-4 h-4" />
@@ -588,65 +583,158 @@ const { isDark, toggleTheme, setTheme } = useFuseTheme()
             </button>
           </div>
 
-          <!-- Live Interactive Preview -->
-          <div class="p-6 border border-outline dark:border-dark-outline rounded-xl bg-surface dark:bg-dark-surface shadow-xs space-y-4">
-            <div class="text-xs font-bold uppercase tracking-wider text-secondary dark:text-dark-secondary">
-              Live Preview
+          <!-- Demo Card with [Preview] | [Code] Switcher -->
+          <div class="border border-outline dark:border-dark-outline rounded-xl bg-surface dark:bg-dark-surface shadow-xs overflow-hidden">
+            <!-- Card Header & Switcher -->
+            <div class="p-4 border-b border-outline dark:border-dark-outline flex items-center justify-between gap-4 bg-muted/20 dark:bg-dark-muted/20">
+              <div class="text-xs font-bold uppercase tracking-wider text-secondary dark:text-dark-secondary">
+                {{ greetVariations.find(v => v.id === greetStyle)?.label || 'Live Demo' }}
+              </div>
+              <div class="flex items-center gap-1 bg-muted/60 dark:bg-dark-muted/60 p-1 rounded-lg border border-outline dark:border-dark-outline">
+                <button
+                  type="button"
+                  class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5"
+                  :class="demoView.greetbar === 'preview' ? 'bg-surface dark:bg-dark-surface shadow-xs text-foreground dark:text-dark-foreground' : 'text-foreground/60 dark:text-dark-foreground/60 hover:text-foreground'"
+                  @click="demoView.greetbar = 'preview'"
+                >
+                  <Eye class="w-3.5 h-3.5" />
+                  <span>Preview</span>
+                </button>
+                <button
+                  type="button"
+                  class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5"
+                  :class="demoView.greetbar === 'code' ? 'bg-surface dark:bg-dark-surface shadow-xs text-foreground dark:text-dark-foreground' : 'text-foreground/60 dark:text-dark-foreground/60 hover:text-foreground'"
+                  @click="demoView.greetbar = 'code'"
+                >
+                  <Code class="w-3.5 h-3.5" />
+                  <span>Code</span>
+                </button>
+              </div>
             </div>
 
-            <!-- Variation 1: Title & Description -->
-            <div v-if="greetStyle === 'title'" class="border border-outline/50 dark:border-dark-outline/50 rounded-xl overflow-hidden">
-              <FuseGreetBar
-                title="System Settings & Security"
-                description="Manage your enterprise access rules and audit logging policies."
-                :user="currentUser"
-              >
-                <template #title-badge>
-                  <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-success/15 text-success">Active</span>
-                </template>
-                <template #actions>
-                  <button type="button" class="px-3 py-1.5 bg-primary text-white text-xs font-medium rounded-md shadow-xs">
-                    Save Changes
-                  </button>
-                </template>
-                <FuseThemeToggler />
-              </FuseGreetBar>
+            <!-- Preview Mode -->
+            <div v-show="demoView.greetbar === 'preview'" class="p-6">
+              <div v-if="greetStyle === 'title'" class="border border-outline/50 dark:border-dark-outline/50 rounded-xl overflow-hidden">
+                <FuseGreetBar
+                  title="System Settings & Security"
+                  description="Manage your enterprise access rules and audit logging policies."
+                  :user="currentUser"
+                >
+                  <template #title-badge>
+                    <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-success/15 text-success">Active</span>
+                  </template>
+                  <template #actions>
+                    <button type="button" class="px-3 py-1.5 bg-primary text-white text-xs font-medium rounded-md shadow-xs">
+                      Save Changes
+                    </button>
+                  </template>
+                  <FuseThemeToggler />
+                </FuseGreetBar>
+              </div>
+
+              <div v-else-if="greetStyle === 'greeting'" class="border border-outline/50 dark:border-dark-outline/50 rounded-xl overflow-hidden">
+                <FuseGreetBar
+                  :user="currentUser"
+                  description="Here is what is happening across your campuses today."
+                >
+                  <FuseThemeToggler />
+                </FuseGreetBar>
+              </div>
+
+              <div v-else-if="greetStyle === 'custom'" class="border border-outline/50 dark:border-dark-outline/50 rounded-xl overflow-hidden">
+                <FuseGreetBar
+                  greeting-prefix="Welcome back to Mbills Enterprise"
+                  :user="currentUser"
+                  description="You have 3 system alerts pending your review."
+                >
+                  <FuseThemeToggler />
+                </FuseGreetBar>
+              </div>
+
+              <div v-else-if="greetStyle === 'crumbs'" class="border border-outline/50 dark:border-dark-outline/50 rounded-xl overflow-hidden">
+                <FuseGreetBar
+                  title="Financial Analytics"
+                  :breadcrumbs="[
+                    { label: 'Admin', route: '/' },
+                    { label: 'Reports', route: '/reports' },
+                    { label: 'Q3 Financial Review' }
+                  ]"
+                  :user="currentUser"
+                >
+                  <FuseThemeToggler />
+                </FuseGreetBar>
+              </div>
             </div>
 
-            <!-- Variation 2: Greeting Mode -->
-            <div v-else-if="greetStyle === 'greeting'" class="border border-outline/50 dark:border-dark-outline/50 rounded-xl overflow-hidden">
-              <FuseGreetBar
-                :user="currentUser"
-                description="Here is what is happening across your campuses today."
+            <!-- Code Mode -->
+            <div v-show="demoView.greetbar === 'code'" class="p-5 bg-black/95 text-slate-100 font-mono text-xs overflow-x-auto relative">
+              <button
+                type="button"
+                class="absolute top-4 right-4 px-2.5 py-1 rounded bg-white/10 hover:bg-white/20 text-white text-[11px] font-sans flex items-center gap-1 transition-colors"
+                @click="copyCode(
+                  greetStyle === 'title'
+                    ? `<FuseGreetBar title=\"System Settings\" description=\"Manage rules\" :user=\"currentUser\">\n  <template #actions><button>Save</button></template>\n  <FuseThemeToggler />\n</FuseGreetBar>`
+                    : greetStyle === 'greeting'
+                    ? `<FuseGreetBar :user=\"currentUser\" description=\"Here is an overview\">\n  <FuseThemeToggler />\n</FuseGreetBar>`
+                    : greetStyle === 'custom'
+                    ? `<FuseGreetBar greeting-prefix=\"Welcome back\" :user=\"currentUser\">\n  <FuseThemeToggler />\n</FuseGreetBar>`
+                    : `<FuseGreetBar title=\"Analytics\" :breadcrumbs=\"breadcrumbList\" :user=\"currentUser\">\n  <FuseThemeToggler />\n</FuseGreetBar>`,
+                  'greet-code'
+                )"
               >
-                <FuseThemeToggler />
-              </FuseGreetBar>
-            </div>
+                <Check v-if="copiedKey === 'greet-code'" class="w-3 h-3 text-emerald-400" />
+                <Copy v-else class="w-3 h-3" />
+                <span>{{ copiedKey === 'greet-code' ? 'Copied!' : 'Copy Code' }}</span>
+              </button>
 
-            <!-- Variation 3: Custom Greeting Prefix -->
-            <div v-else-if="greetStyle === 'custom'" class="border border-outline/50 dark:border-dark-outline/50 rounded-xl overflow-hidden">
-              <FuseGreetBar
-                greeting-prefix="Welcome back to Mbills Enterprise"
-                :user="currentUser"
-                description="You have 3 system alerts pending your review."
-              >
-                <FuseThemeToggler />
-              </FuseGreetBar>
-            </div>
+              <div v-if="greetStyle === 'title'" class="space-y-1">
+                <p class="text-slate-400">// Style 1: Page Title & Description Mode</p>
+                <p>&lt;<span class="text-amber-400">FuseGreetBar</span></p>
+                <p class="pl-4"><span class="text-sky-300">title</span>=<span class="text-emerald-300">"System Settings & Security"</span></p>
+                <p class="pl-4"><span class="text-sky-300">description</span>=<span class="text-emerald-300">"Manage your enterprise access rules and audit logging policies."</span></p>
+                <p class="pl-4">:<span class="text-sky-300">user</span>=<span class="text-emerald-300">"currentUser"</span></p>
+                <p>&gt;</p>
+                <p class="pl-4">&lt;<span class="text-amber-400">template</span> #<span class="text-sky-300">title-badge</span>&gt;</p>
+                <p class="pl-8">&lt;<span class="text-amber-400">span</span> <span class="text-sky-300">class</span>=<span class="text-emerald-300">"badge"</span>&gt;Active&lt;/<span class="text-amber-400">span</span>&gt;</p>
+                <p class="pl-4">&lt;/<span class="text-amber-400">template</span>&gt;</p>
+                <p class="pl-4">&lt;<span class="text-amber-400">template</span> #<span class="text-sky-300">actions</span>&gt;</p>
+                <p class="pl-8">&lt;<span class="text-amber-400">button</span>&gt;Save Changes&lt;/<span class="text-amber-400">button</span>&gt;</p>
+                <p class="pl-4">&lt;/<span class="text-amber-400">template</span>&gt;</p>
+                <p class="pl-4">&lt;<span class="text-amber-400">FuseThemeToggler</span> /&gt;</p>
+                <p>&lt;/<span class="text-amber-400">FuseGreetBar</span>&gt;</p>
+              </div>
 
-            <!-- Variation 4: Breadcrumbs Mode -->
-            <div v-else-if="greetStyle === 'crumbs'" class="border border-outline/50 dark:border-dark-outline/50 rounded-xl overflow-hidden">
-              <FuseGreetBar
-                title="Financial Analytics"
-                :breadcrumbs="[
-                  { label: 'Admin', route: '/' },
-                  { label: 'Reports', route: '/reports' },
-                  { label: 'Q3 Financial Review' }
-                ]"
-                :user="currentUser"
-              >
-                <FuseThemeToggler />
-              </FuseGreetBar>
+              <div v-else-if="greetStyle === 'greeting'" class="space-y-1">
+                <p class="text-slate-400">// Style 2: Automatic Greeting Mode ("Good morning / afternoon, Kwame")</p>
+                <p>&lt;<span class="text-amber-400">FuseGreetBar</span></p>
+                <p class="pl-4">:<span class="text-sky-300">user</span>=<span class="text-emerald-300">"currentUser"</span></p>
+                <p class="pl-4"><span class="text-sky-300">description</span>=<span class="text-emerald-300">"Here is what is happening across your campuses today."</span></p>
+                <p>&gt;</p>
+                <p class="pl-4">&lt;<span class="text-amber-400">FuseThemeToggler</span> /&gt;</p>
+                <p>&lt;/<span class="text-amber-400">FuseGreetBar</span>&gt;</p>
+              </div>
+
+              <div v-else-if="greetStyle === 'custom'" class="space-y-1">
+                <p class="text-slate-400">// Style 3: Custom Greeting Prefix</p>
+                <p>&lt;<span class="text-amber-400">FuseGreetBar</span></p>
+                <p class="pl-4"><span class="text-sky-300">greeting-prefix</span>=<span class="text-emerald-300">"Welcome back to Mbills Enterprise"</span></p>
+                <p class="pl-4">:<span class="text-sky-300">user</span>=<span class="text-emerald-300">"currentUser"</span></p>
+                <p class="pl-4"><span class="text-sky-300">description</span>=<span class="text-emerald-300">"You have 3 system alerts pending your review."</span></p>
+                <p>&gt;</p>
+                <p class="pl-4">&lt;<span class="text-amber-400">FuseThemeToggler</span> /&gt;</p>
+                <p>&lt;/<span class="text-amber-400">FuseGreetBar</span>&gt;</p>
+              </div>
+
+              <div v-else class="space-y-1">
+                <p class="text-slate-400">// Style 4: Breadcrumbs Mode</p>
+                <p>&lt;<span class="text-amber-400">FuseGreetBar</span></p>
+                <p class="pl-4"><span class="text-sky-300">title</span>=<span class="text-emerald-300">"Financial Analytics"</span></p>
+                <p class="pl-4">:<span class="text-sky-300">breadcrumbs</span>=<span class="text-emerald-300">"breadcrumbTrail"</span></p>
+                <p class="pl-4">:<span class="text-sky-300">user</span>=<span class="text-emerald-300">"currentUser"</span></p>
+                <p>&gt;</p>
+                <p class="pl-4">&lt;<span class="text-amber-400">FuseThemeToggler</span> /&gt;</p>
+                <p>&lt;/<span class="text-amber-400">FuseGreetBar</span>&gt;</p>
+              </div>
             </div>
           </div>
         </div>
@@ -677,9 +765,10 @@ const { isDark, toggleTheme, setTheme } = useFuseTheme()
             </p>
           </div>
 
-          <!-- Table Controls & Live Preview -->
-          <div class="p-1 border border-outline dark:border-dark-outline rounded-xl bg-surface dark:bg-dark-surface shadow-xs space-y-4">
-            <div class="p-4 flex flex-wrap items-center justify-between gap-4 border-b border-outline dark:border-dark-outline">
+          <!-- Table Demo Card with [Preview] | [Code] Switcher -->
+          <div class="border border-outline dark:border-dark-outline rounded-xl bg-surface dark:bg-dark-surface shadow-xs overflow-hidden">
+            <!-- Card Header & Switcher -->
+            <div class="p-4 border-b border-outline dark:border-dark-outline flex flex-wrap items-center justify-between gap-4 bg-muted/20 dark:bg-dark-muted/20">
               <div class="flex items-center gap-4 text-xs font-medium">
                 <label class="flex items-center gap-1.5 cursor-pointer">
                   <input type="checkbox" v-model="tableStriped" class="rounded" />
@@ -689,54 +778,114 @@ const { isDark, toggleTheme, setTheme } = useFuseTheme()
                   <input type="checkbox" v-model="tableDense" class="rounded" />
                   <span>Dense Mode</span>
                 </label>
+                <button
+                  type="button"
+                  class="px-2.5 py-1 text-xs font-medium rounded-lg border border-outline dark:border-dark-outline hover:bg-muted dark:hover:bg-dark-muted transition-colors flex items-center gap-1.5"
+                  @click="tableLoading = !tableLoading"
+                >
+                  <RefreshCw class="w-3 h-3" :class="{ 'animate-spin': tableLoading }" />
+                  <span>Skeleton: {{ tableLoading ? 'ON' : 'OFF' }}</span>
+                </button>
               </div>
 
-              <button
-                type="button"
-                class="px-3 py-1.5 text-xs font-medium rounded-lg border border-outline dark:border-dark-outline hover:bg-muted dark:hover:bg-dark-muted transition-colors flex items-center gap-1.5"
-                @click="tableLoading = !tableLoading"
-              >
-                <RefreshCw class="w-3.5 h-3.5" :class="{ 'animate-spin': tableLoading }" />
-                <span>Toggle Skeleton: {{ tableLoading ? 'ON' : 'OFF' }}</span>
-              </button>
+              <div class="flex items-center gap-1 bg-muted/60 dark:bg-dark-muted/60 p-1 rounded-lg border border-outline dark:border-dark-outline">
+                <button
+                  type="button"
+                  class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5"
+                  :class="demoView.table === 'preview' ? 'bg-surface dark:bg-dark-surface shadow-xs text-foreground dark:text-dark-foreground' : 'text-foreground/60 dark:text-dark-foreground/60 hover:text-foreground'"
+                  @click="demoView.table = 'preview'"
+                >
+                  <Eye class="w-3.5 h-3.5" />
+                  <span>Preview</span>
+                </button>
+                <button
+                  type="button"
+                  class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5"
+                  :class="demoView.table === 'code' ? 'bg-surface dark:bg-dark-surface shadow-xs text-foreground dark:text-dark-foreground' : 'text-foreground/60 dark:text-dark-foreground/60 hover:text-foreground'"
+                  @click="demoView.table = 'code'"
+                >
+                  <Code class="w-3.5 h-3.5" />
+                  <span>Code</span>
+                </button>
+              </div>
             </div>
 
-            <FuseTable
-              title="Enterprise Staff Directory"
-              :columns="tableColumns"
-              :rows="tableRows"
-              :page-size="4"
-              v-model:page="tablePage"
-              selectable
-              v-model:selected="tableSelected"
-              filterable
-              searchable
-              :striped="tableStriped"
-              :dense="tableDense"
-              :loading="tableLoading"
-              @action="handleTableAction"
-            >
-              <template #toolbar>
-                <button
-                  type="button"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white rounded-lg text-xs font-semibold hover:bg-primary/90 transition-colors shadow-xs"
-                  @click="alert('Add New Staff Member')"
-                >
-                  <Plus class="w-3.5 h-3.5" />
-                  <span>Add Member</span>
-                </button>
-              </template>
+            <!-- Preview Mode -->
+            <div v-show="demoView.table === 'preview'" class="p-4">
+              <FuseTable
+                title="Enterprise Staff Directory"
+                :columns="tableColumns"
+                :rows="tableRows"
+                :page-size="4"
+                v-model:page="tablePage"
+                selectable
+                v-model:selected="tableSelected"
+                filterable
+                searchable
+                :striped="tableStriped"
+                :dense="tableDense"
+                :loading="tableLoading"
+                @action="handleTableAction"
+              >
+                <template #toolbar>
+                  <button
+                    type="button"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white rounded-lg text-xs font-semibold hover:bg-primary/90 transition-colors shadow-xs"
+                    @click="alert('Add New Staff Member')"
+                  >
+                    <Plus class="w-3.5 h-3.5" />
+                    <span>Add Member</span>
+                  </button>
+                </template>
 
-              <template #bulk="{ selected }">
-                <button
-                  type="button"
-                  class="px-3 py-1 text-xs font-bold text-error bg-error/10 border border-error/30 rounded-lg hover:bg-error/20 transition-colors"
-                  @click="alert(`Deleting ${selected.length} records: [${selected.join(', ')}]`)"
-                >
-                  Delete Selected ({{ selected.length }})
-                </button>
-              </template>
-            </FuseTable>
+                <template #bulk="{ selected }">
+                  <button
+                    type="button"
+                    class="px-3 py-1 text-xs font-bold text-error bg-error/10 border border-error/30 rounded-lg hover:bg-error/20 transition-colors"
+                    @click="alert(`Deleting ${selected.length} records: [${selected.join(', ')}]`)"
+                  >
+                    Delete Selected ({{ selected.length }})
+                  </button>
+                </template>
+              </FuseTable>
+            </div>
+
+            <!-- Code Mode -->
+            <div v-show="demoView.table === 'code'" class="p-5 bg-black/95 text-slate-100 font-mono text-xs overflow-x-auto relative space-y-1">
+              <button
+                type="button"
+                class="absolute top-4 right-4 px-2.5 py-1 rounded bg-white/10 hover:bg-white/20 text-white text-[11px] font-sans flex items-center gap-1 transition-colors"
+                @click="copyCode(
+                  `<FuseTable\n  title=\"Enterprise Staff Directory\"\n  :columns=\"tableColumns\"\n  :rows=\"tableRows\"\n  :page-size=\"10\"\n  v-model:page=\"tablePage\"\n  selectable\n  v-model:selected=\"tableSelected\"\n  filterable\n  searchable\n  @action=\"handleTableAction\"\n>\n  <template #toolbar>\n    <button>+ Add Member</button>\n  </template>\n  <template #bulk=\"{ selected }\">\n    <button>Delete (\{\{ selected.length \}\})</button>\n  </template>\n</FuseTable>`,
+                  'table-code'
+                )"
+              >
+                <Check v-if="copiedKey === 'table-code'" class="w-3 h-3 text-emerald-400" />
+                <Copy v-else class="w-3 h-3" />
+                <span>{{ copiedKey === 'table-code' ? 'Copied!' : 'Copy Code' }}</span>
+              </button>
+
+              <p class="text-slate-400">// Full FuseTable Setup with Toolbar & Bulk Slot</p>
+              <p>&lt;<span class="text-amber-400">FuseTable</span></p>
+              <p class="pl-4"><span class="text-sky-300">title</span>=<span class="text-emerald-300">"Enterprise Staff Directory"</span></p>
+              <p class="pl-4">:<span class="text-sky-300">columns</span>=<span class="text-emerald-300">"tableColumns"</span></p>
+              <p class="pl-4">:<span class="text-sky-300">rows</span>=<span class="text-emerald-300">"tableRows"</span></p>
+              <p class="pl-4">:<span class="text-sky-300">page-size</span>=<span class="text-emerald-300">"10"</span></p>
+              <p class="pl-4"><span class="text-sky-300">v-model:page</span>=<span class="text-emerald-300">"tablePage"</span></p>
+              <p class="pl-4"><span class="text-sky-300">selectable</span></p>
+              <p class="pl-4"><span class="text-sky-300">v-model:selected</span>=<span class="text-emerald-300">"tableSelected"</span></p>
+              <p class="pl-4"><span class="text-sky-300">filterable</span></p>
+              <p class="pl-4"><span class="text-sky-300">searchable</span></p>
+              <p class="pl-4">@<span class="text-sky-300">action</span>=<span class="text-emerald-300">"handleTableAction"</span></p>
+              <p>&gt;</p>
+              <p class="pl-4">&lt;<span class="text-amber-400">template</span> #<span class="text-sky-300">toolbar</span>&gt;</p>
+              <p class="pl-8">&lt;<span class="text-amber-400">button</span>&gt;+ Add Member&lt;/<span class="text-amber-400">button</span>&gt;</p>
+              <p class="pl-4">&lt;/<span class="text-amber-400">template</span>&gt;</p>
+              <p class="pl-4">&lt;<span class="text-amber-400">template</span> #<span class="text-sky-300">bulk</span>="{ selected }"&gt;</p>
+              <p class="pl-8">&lt;<span class="text-amber-400">button</span>&gt;Delete Selected (\{\{ selected.length \}\})&lt;/<span class="text-amber-400">button</span>&gt;</p>
+              <p class="pl-4">&lt;/<span class="text-amber-400">template</span>&gt;</p>
+              <p>&lt;/<span class="text-amber-400">FuseTable</span>&gt;</p>
+            </div>
           </div>
         </div>
 
@@ -755,41 +904,98 @@ const { isDark, toggleTheme, setTheme } = useFuseTheme()
             </p>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <FuseStatCard
-              title="Gross Revenue"
-              type="money"
-              :value="148500"
-              currency="GHS"
-              :icon="DollarSign"
-              tone="success"
-              :trend="{ direction: 'up', label: '+18.4% vs last mo', good: true }"
-            />
-            <FuseStatCard
-              title="Total Active Users"
-              type="number"
-              :value="1254300"
-              compact
-              :icon="Users"
-              tone="primary"
-              :trend="{ direction: 'up', label: '+4.2% today', good: true }"
-            />
-            <FuseStatCard
-              title="Server Uptime"
-              type="number"
-              :value="99.98"
-              suffix="%"
-              tone="info"
-              :trend="{ direction: 'neutral', label: 'Zero downtime' }"
-            />
-            <FuseStatCard
-              title="AWS Infrastructure Cost"
-              type="money"
-              :value="2400"
-              currency="USD"
-              tone="warning"
-              :trend="{ direction: 'down', label: '-8.5% optimized', good: true }"
-            />
+          <!-- StatCard Demo Card with [Preview] | [Code] Switcher -->
+          <div class="border border-outline dark:border-dark-outline rounded-xl bg-surface dark:bg-dark-surface shadow-xs overflow-hidden">
+            <div class="p-4 border-b border-outline dark:border-dark-outline flex items-center justify-between gap-4 bg-muted/20 dark:bg-dark-muted/20">
+              <div class="text-xs font-bold uppercase tracking-wider text-secondary dark:text-dark-secondary">
+                Metrics & KPI Cards
+              </div>
+              <div class="flex items-center gap-1 bg-muted/60 dark:bg-dark-muted/60 p-1 rounded-lg border border-outline dark:border-dark-outline">
+                <button
+                  type="button"
+                  class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5"
+                  :class="demoView.statcard === 'preview' ? 'bg-surface dark:bg-dark-surface shadow-xs text-foreground dark:text-dark-foreground' : 'text-foreground/60 dark:text-dark-foreground/60 hover:text-foreground'"
+                  @click="demoView.statcard = 'preview'"
+                >
+                  <Eye class="w-3.5 h-3.5" />
+                  <span>Preview</span>
+                </button>
+                <button
+                  type="button"
+                  class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5"
+                  :class="demoView.statcard === 'code' ? 'bg-surface dark:bg-dark-surface shadow-xs text-foreground dark:text-dark-foreground' : 'text-foreground/60 dark:text-dark-foreground/60 hover:text-foreground'"
+                  @click="demoView.statcard = 'code'"
+                >
+                  <Code class="w-3.5 h-3.5" />
+                  <span>Code</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Preview Mode -->
+            <div v-show="demoView.statcard === 'preview'" class="p-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <FuseStatCard
+                  title="Gross Revenue"
+                  type="money"
+                  :value="148500"
+                  currency="GHS"
+                  :icon="DollarSign"
+                  tone="success"
+                  :trend="{ direction: 'up', label: '+18.4% vs last mo', good: true }"
+                />
+                <FuseStatCard
+                  title="Total Active Users"
+                  type="number"
+                  :value="1254300"
+                  compact
+                  :icon="Users"
+                  tone="primary"
+                  :trend="{ direction: 'up', label: '+4.2% today', good: true }"
+                />
+                <FuseStatCard
+                  title="Server Uptime"
+                  type="number"
+                  :value="99.98"
+                  suffix="%"
+                  tone="info"
+                  :trend="{ direction: 'neutral', label: 'Zero downtime' }"
+                />
+                <FuseStatCard
+                  title="AWS Infrastructure Cost"
+                  type="money"
+                  :value="2400"
+                  currency="USD"
+                  tone="warning"
+                  :trend="{ direction: 'down', label: '-8.5% optimized', good: true }"
+                />
+              </div>
+            </div>
+
+            <!-- Code Mode -->
+            <div v-show="demoView.statcard === 'code'" class="p-5 bg-black/95 text-slate-100 font-mono text-xs overflow-x-auto relative space-y-2">
+              <button
+                type="button"
+                class="absolute top-4 right-4 px-2.5 py-1 rounded bg-white/10 hover:bg-white/20 text-white text-[11px] font-sans flex items-center gap-1 transition-colors"
+                @click="copyCode(
+                  `<FuseStatCard title=\"Gross Revenue\" type=\"money\" :value=\"148500\" currency=\"GHS\" tone=\"success\" :trend=\"{ direction: 'up', label: '+18.4%', good: true }\" />\n<FuseStatCard title=\"Users\" type=\"number\" :value=\"1254300\" compact :icon=\"Users\" />\n<FuseStatCard title=\"Cost\" type=\"money\" :value=\"2400\" :trend=\"{ direction: 'down', label: '-8.5%', good: true }\" />`,
+                  'stat-code'
+                )"
+              >
+                <Check v-if="copiedKey === 'stat-code'" class="w-3 h-3 text-emerald-400" />
+                <Copy v-else class="w-3 h-3" />
+                <span>{{ copiedKey === 'stat-code' ? 'Copied!' : 'Copy Code' }}</span>
+              </button>
+
+              <p class="text-slate-400">// 1. Money Card with Ghanaian Cedi (GHS) or USD</p>
+              <p>&lt;<span class="text-amber-400">FuseStatCard</span> <span class="text-sky-300">title</span>=<span class="text-emerald-300">"Gross Revenue"</span> <span class="text-sky-300">type</span>=<span class="text-emerald-300">"money"</span> :<span class="text-sky-300">value</span>=<span class="text-emerald-300">"148500"</span> <span class="text-sky-300">currency</span>=<span class="text-emerald-300">"GHS"</span> <span class="text-sky-300">tone</span>=<span class="text-emerald-300">"success"</span> :<span class="text-sky-300">trend</span>=<span class="text-emerald-300">"{ direction: 'up', label: '+18.4%', good: true }"</span> /&gt;</p>
+
+              <p class="text-slate-400 pt-2">// 2. Compact Big Numbers (displays 1.3M)</p>
+              <p>&lt;<span class="text-amber-400">FuseStatCard</span> <span class="text-sky-300">title</span>=<span class="text-emerald-300">"Total Users"</span> <span class="text-sky-300">type</span>=<span class="text-emerald-300">"number"</span> :<span class="text-sky-300">value</span>=<span class="text-emerald-300">"1254300"</span> <span class="text-sky-300">compact</span> :<span class="text-sky-300">icon</span>=<span class="text-emerald-300">"Users"</span> /&gt;</p>
+
+              <p class="text-slate-400 pt-2">// 3. Inverted Trend (Cost down = Good = Green)</p>
+              <p>&lt;<span class="text-amber-400">FuseStatCard</span> <span class="text-sky-300">title</span>=<span class="text-emerald-300">"AWS Infrastructure"</span> <span class="text-sky-300">type</span>=<span class="text-emerald-300">"money"</span> :<span class="text-sky-300">value</span>=<span class="text-emerald-300">"2400"</span> :<span class="text-sky-300">trend</span>=<span class="text-emerald-300">"{ direction: 'down', label: '-8.5%', good: true }"</span> /&gt;</p>
+            </div>
           </div>
         </div>
 
@@ -808,64 +1014,121 @@ const { isDark, toggleTheme, setTheme } = useFuseTheme()
             </p>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-surface dark:bg-dark-surface p-6 border border-outline dark:border-dark-outline rounded-xl shadow-xs">
-            <FuseInput
-              label="1. Standard Text"
-              placeholder="e.g. Kwame Mensah"
-              v-model="formState.fullName"
-              required
-            />
-            <FuseInput
-              type="email"
-              label="2. Corporate Email"
-              placeholder="name@enterprise.com"
-              v-model="formState.email"
-              required
-            />
-            <FuseInput
-              type="password"
-              label="3. Password with Reveal Eye"
-              placeholder="Enter secure password"
-              v-model="formState.password"
-              hint="Click eye icon to toggle visibility"
-            />
-            <FuseInput
-              type="select"
-              label="4. Select Dropdown"
-              :options="roleOptions"
-              v-model="formState.role"
-              searchable
-            />
-            <FuseInput
-              type="multiselect"
-              label="5. Multi-Select Tags"
-              :options="skillOptions"
-              v-model="formState.skills"
-              searchable
-              clearable
-            />
-            <FuseInput
-              type="range"
-              :label="`6. Range Slider (${formState.rangeVal}%)`"
-              :min="0"
-              :max="100"
-              v-model="formState.rangeVal"
-            />
-            <div class="md:col-span-2">
-              <FuseInput
-                type="textarea"
-                label="7. Multi-line Textarea"
-                placeholder="Write your note..."
-                :rows="3"
-                v-model="formState.bio"
-              />
+          <!-- Input Demo Card with [Preview] | [Code] Switcher -->
+          <div class="border border-outline dark:border-dark-outline rounded-xl bg-surface dark:bg-dark-surface shadow-xs overflow-hidden">
+            <div class="p-4 border-b border-outline dark:border-dark-outline flex items-center justify-between gap-4 bg-muted/20 dark:bg-dark-muted/20">
+              <div class="text-xs font-bold uppercase tracking-wider text-secondary dark:text-dark-secondary">
+                Form Inputs Playground
+              </div>
+              <div class="flex items-center gap-1 bg-muted/60 dark:bg-dark-muted/60 p-1 rounded-lg border border-outline dark:border-dark-outline">
+                <button
+                  type="button"
+                  class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5"
+                  :class="demoView.input === 'preview' ? 'bg-surface dark:bg-dark-surface shadow-xs text-foreground dark:text-dark-foreground' : 'text-foreground/60 dark:text-dark-foreground/60 hover:text-foreground'"
+                  @click="demoView.input === 'preview'"
+                >
+                  <Eye class="w-3.5 h-3.5" />
+                  <span>Preview</span>
+                </button>
+                <button
+                  type="button"
+                  class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5"
+                  :class="demoView.input === 'code' ? 'bg-surface dark:bg-dark-surface shadow-xs text-foreground dark:text-dark-foreground' : 'text-foreground/60 dark:text-dark-foreground/60 hover:text-foreground'"
+                  @click="demoView.input === 'code'"
+                >
+                  <Code class="w-3.5 h-3.5" />
+                  <span>Code</span>
+                </button>
+              </div>
             </div>
-            <div class="md:col-span-3 pt-2">
-              <FuseInput
-                type="checkbox"
-                placeholder="I accept the Mbills Enterprise Terms of Service."
-                v-model="formState.termsAccepted"
-              />
+
+            <!-- Preview Mode -->
+            <div v-show="demoView.input === 'preview'" class="p-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <FuseInput
+                  label="1. Standard Text"
+                  placeholder="e.g. Kwame Mensah"
+                  v-model="formState.fullName"
+                  required
+                />
+                <FuseInput
+                  type="email"
+                  label="2. Corporate Email"
+                  placeholder="name@enterprise.com"
+                  v-model="formState.email"
+                  required
+                />
+                <FuseInput
+                  type="password"
+                  label="3. Password with Reveal Eye"
+                  placeholder="Enter secure password"
+                  v-model="formState.password"
+                  hint="Click eye icon to toggle visibility"
+                />
+                <FuseInput
+                  type="select"
+                  label="4. Select Dropdown"
+                  :options="roleOptions"
+                  v-model="formState.role"
+                  searchable
+                />
+                <FuseInput
+                  type="multiselect"
+                  label="5. Multi-Select Tags"
+                  :options="skillOptions"
+                  v-model="formState.skills"
+                  searchable
+                  clearable
+                />
+                <FuseInput
+                  type="range"
+                  :label="`6. Range Slider (${formState.rangeVal}%)`"
+                  :min="0"
+                  :max="100"
+                  v-model="formState.rangeVal"
+                />
+                <div class="md:col-span-2">
+                  <FuseInput
+                    type="textarea"
+                    label="7. Multi-line Textarea"
+                    placeholder="Write your note..."
+                    :rows="3"
+                    v-model="formState.bio"
+                  />
+                </div>
+                <div class="md:col-span-3 pt-2">
+                  <FuseInput
+                    type="checkbox"
+                    placeholder="I accept the Mbills Enterprise Terms of Service."
+                    v-model="formState.termsAccepted"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Code Mode -->
+            <div v-show="demoView.input === 'code'" class="p-5 bg-black/95 text-slate-100 font-mono text-xs overflow-x-auto relative space-y-2">
+              <button
+                type="button"
+                class="absolute top-4 right-4 px-2.5 py-1 rounded bg-white/10 hover:bg-white/20 text-white text-[11px] font-sans flex items-center gap-1 transition-colors"
+                @click="copyCode(
+                  `<FuseInput label=\"Name\" v-model=\"form.name\" required />\n<FuseInput type=\"email\" label=\"Email\" v-model=\"form.email\" />\n<FuseInput type=\"password\" label=\"Password\" v-model=\"form.password\" />\n<FuseInput type=\"select\" label=\"Role\" :options=\"roles\" v-model=\"form.role\" searchable />\n<FuseInput type=\"multiselect\" label=\"Skills\" :options=\"skills\" v-model=\"form.skills\" />`,
+                  'input-code'
+                )"
+              >
+                <Check v-if="copiedKey === 'input-code'" class="w-3 h-3 text-emerald-400" />
+                <Copy v-else class="w-3 h-3" />
+                <span>{{ copiedKey === 'input-code' ? 'Copied!' : 'Copy Code' }}</span>
+              </button>
+
+              <p class="text-slate-400">// Password with auto reveal eye toggle</p>
+              <p>&lt;<span class="text-amber-400">FuseInput</span> <span class="text-sky-300">type</span>=<span class="text-emerald-300">"password"</span> <span class="text-sky-300">label</span>=<span class="text-emerald-300">"Password"</span> <span class="text-sky-300">v-model</span>=<span class="text-emerald-300">"password"</span> /&gt;</p>
+
+              <p class="text-slate-400 pt-2">// Searchable Multi-Select Tags</p>
+              <p>&lt;<span class="text-amber-400">FuseInput</span> <span class="text-sky-300">type</span>=<span class="text-emerald-300">"multiselect"</span> <span class="text-sky-300">label</span>=<span class="text-emerald-300">"Skills"</span> :<span class="text-sky-300">options</span>=<span class="text-emerald-300">"skillList"</span> <span class="text-sky-300">v-model</span>=<span class="text-emerald-300">"selectedSkills"</span> <span class="text-sky-300">searchable</span> <span class="text-sky-300">clearable</span> /&gt;</p>
+
+              <p class="text-slate-400 pt-2">// Multi-line Textarea</p>
+              <p>&lt;<span class="text-amber-400">FuseInput</span> <span class="text-sky-300">type</span>=<span class="text-emerald-300">"textarea"</span> <span class="text-sky-300">label</span>=<span class="text-emerald-300">"Bio"</span> :<span class="text-sky-300">rows</span>=<span class="text-emerald-300">"3"</span> <span class="text-sky-300">v-model</span>=<span class="text-emerald-300">"bio"</span> /&gt;</p>
             </div>
           </div>
         </div>
@@ -885,20 +1148,77 @@ const { isDark, toggleTheme, setTheme } = useFuseTheme()
             </p>
           </div>
 
-          <div class="p-6 border border-outline dark:border-dark-outline rounded-xl bg-surface dark:bg-dark-surface space-y-4">
-            <FuseFilters
-              show-search
-              search-placeholder="Search records by name, department, role..."
-              :debounce="300"
-              :filters="filterConfigs"
-              :grid-cols="2"
-              v-model="selectedFilters"
-              v-model:search="filterSearch"
-            />
+          <!-- Filters Demo Card with [Preview] | [Code] Switcher -->
+          <div class="border border-outline dark:border-dark-outline rounded-xl bg-surface dark:bg-dark-surface shadow-xs overflow-hidden">
+            <div class="p-4 border-b border-outline dark:border-dark-outline flex items-center justify-between gap-4 bg-muted/20 dark:bg-dark-muted/20">
+              <div class="text-xs font-bold uppercase tracking-wider text-secondary dark:text-dark-secondary">
+                Search & Filter Toolbar
+              </div>
+              <div class="flex items-center gap-1 bg-muted/60 dark:bg-dark-muted/60 p-1 rounded-lg border border-outline dark:border-dark-outline">
+                <button
+                  type="button"
+                  class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5"
+                  :class="demoView.filters === 'preview' ? 'bg-surface dark:bg-dark-surface shadow-xs text-foreground dark:text-dark-foreground' : 'text-foreground/60 dark:text-dark-foreground/60 hover:text-foreground'"
+                  @click="demoView.filters === 'preview'"
+                >
+                  <Eye class="w-3.5 h-3.5" />
+                  <span>Preview</span>
+                </button>
+                <button
+                  type="button"
+                  class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5"
+                  :class="demoView.filters === 'code' ? 'bg-surface dark:bg-dark-surface shadow-xs text-foreground dark:text-dark-foreground' : 'text-foreground/60 dark:text-dark-foreground/60 hover:text-foreground'"
+                  @click="demoView.filters === 'code'"
+                >
+                  <Code class="w-3.5 h-3.5" />
+                  <span>Code</span>
+                </button>
+              </div>
+            </div>
 
-            <div class="p-3.5 rounded-lg bg-muted/30 dark:bg-dark-muted/30 border border-outline dark:border-dark-outline text-xs font-mono">
-              <span class="font-bold">Active Filter Output:</span>
-              <pre class="mt-1">{{ { search: filterSearch, filters: selectedFilters } }}</pre>
+            <!-- Preview Mode -->
+            <div v-show="demoView.filters === 'preview'" class="p-6 space-y-4">
+              <FuseFilters
+                show-search
+                search-placeholder="Search records by name, department, role..."
+                :debounce="300"
+                :filters="filterConfigs"
+                :grid-cols="2"
+                v-model="selectedFilters"
+                v-model:search="filterSearch"
+              />
+
+              <div class="p-3.5 rounded-lg bg-muted/30 dark:bg-dark-muted/30 border border-outline dark:border-dark-outline text-xs font-mono">
+                <span class="font-bold">Active Filter Output:</span>
+                <pre class="mt-1">{{ { search: filterSearch, filters: selectedFilters } }}</pre>
+              </div>
+            </div>
+
+            <!-- Code Mode -->
+            <div v-show="demoView.filters === 'code'" class="p-5 bg-black/95 text-slate-100 font-mono text-xs overflow-x-auto relative space-y-1">
+              <button
+                type="button"
+                class="absolute top-4 right-4 px-2.5 py-1 rounded bg-white/10 hover:bg-white/20 text-white text-[11px] font-sans flex items-center gap-1 transition-colors"
+                @click="copyCode(
+                  `<FuseFilters\n  show-search\n  :debounce=\"300\"\n  :filters=\"filterConfigs\"\n  :grid-cols=\"2\"\n  v-model=\"selectedFilters\"\n  v-model:search=\"filterSearch\"\n/>`,
+                  'filter-code'
+                )"
+              >
+                <Check v-if="copiedKey === 'filter-code'" class="w-3 h-3 text-emerald-400" />
+                <Copy v-else class="w-3 h-3" />
+                <span>{{ copiedKey === 'filter-code' ? 'Copied!' : 'Copy Code' }}</span>
+              </button>
+
+              <p class="text-slate-400">// FuseFilters Toolbar with Debounced Search</p>
+              <p>&lt;<span class="text-amber-400">FuseFilters</span></p>
+              <p class="pl-4"><span class="text-sky-300">show-search</span></p>
+              <p class="pl-4"><span class="text-sky-300">search-placeholder</span>=<span class="text-emerald-300">"Search records..."</span></p>
+              <p class="pl-4">:<span class="text-sky-300">debounce</span>=<span class="text-emerald-300">"300"</span></p>
+              <p class="pl-4">:<span class="text-sky-300">filters</span>=<span class="text-emerald-300">"filterConfigs"</span></p>
+              <p class="pl-4">:<span class="text-sky-300">grid-cols</span>=<span class="text-emerald-300">"2"</span></p>
+              <p class="pl-4"><span class="text-sky-300">v-model</span>=<span class="text-emerald-300">"selectedFilters"</span></p>
+              <p class="pl-4"><span class="text-sky-300">v-model:search</span>=<span class="text-emerald-300">"filterSearch"</span></p>
+              <p>/&gt;</p>
             </div>
           </div>
         </div>
@@ -918,26 +1238,117 @@ const { isDark, toggleTheme, setTheme } = useFuseTheme()
             </p>
           </div>
 
-          <div class="p-6 border border-outline dark:border-dark-outline rounded-xl bg-surface dark:bg-dark-surface space-y-4">
-            <h3 class="font-bold text-sm">Static Items Prop (with Icons)</h3>
-            <div class="p-4 rounded-xl border border-outline/50 dark:border-dark-outline/50 bg-muted/20 dark:bg-dark-muted/20">
+          <!-- Breadcrumbs Demo Card 1: Static -->
+          <div class="border border-outline dark:border-dark-outline rounded-xl bg-surface dark:bg-dark-surface shadow-xs overflow-hidden">
+            <div class="p-4 border-b border-outline dark:border-dark-outline flex items-center justify-between gap-4 bg-muted/20 dark:bg-dark-muted/20">
+              <div class="text-xs font-bold uppercase tracking-wider text-secondary dark:text-dark-secondary">
+                Style 1: Static Items Prop (with Icons)
+              </div>
+              <div class="flex items-center gap-1 bg-muted/60 dark:bg-dark-muted/60 p-1 rounded-lg border border-outline dark:border-dark-outline">
+                <button
+                  type="button"
+                  class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5"
+                  :class="demoView.breadcrumbs1 === 'preview' ? 'bg-surface dark:bg-dark-surface shadow-xs text-foreground dark:text-dark-foreground' : 'text-foreground/60 dark:text-dark-foreground/60 hover:text-foreground'"
+                  @click="demoView.breadcrumbs1 = 'preview'"
+                >
+                  <Eye class="w-3.5 h-3.5" />
+                  <span>Preview</span>
+                </button>
+                <button
+                  type="button"
+                  class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5"
+                  :class="demoView.breadcrumbs1 === 'code' ? 'bg-surface dark:bg-dark-surface shadow-xs text-foreground dark:text-dark-foreground' : 'text-foreground/60 dark:text-dark-foreground/60 hover:text-foreground'"
+                  @click="demoView.breadcrumbs1 = 'code'"
+                >
+                  <Code class="w-3.5 h-3.5" />
+                  <span>Code</span>
+                </button>
+              </div>
+            </div>
+
+            <div v-show="demoView.breadcrumbs1 === 'preview'" class="p-6">
               <FuseBreadcrumbs :items="staticCrumbItems" />
+            </div>
+
+            <div v-show="demoView.breadcrumbs1 === 'code'" class="p-5 bg-black/95 text-slate-100 font-mono text-xs overflow-x-auto relative space-y-1">
+              <button
+                type="button"
+                class="absolute top-4 right-4 px-2.5 py-1 rounded bg-white/10 hover:bg-white/20 text-white text-[11px] font-sans flex items-center gap-1 transition-colors"
+                @click="copyCode(
+                  `<FuseBreadcrumbs :items=\"[\n  { label: 'Home', route: '/', icon: Home },\n  { label: 'Docs', route: '/docs' },\n  { label: 'FuseTable' }\n]\" />`,
+                  'crumb1-code'
+                )"
+              >
+                <Check v-if="copiedKey === 'crumb1-code'" class="w-3 h-3 text-emerald-400" />
+                <Copy v-else class="w-3 h-3" />
+                <span>{{ copiedKey === 'crumb1-code' ? 'Copied!' : 'Copy Code' }}</span>
+              </button>
+
+              <p class="text-slate-400">// Static Breadcrumbs Trail with Icons</p>
+              <p>&lt;<span class="text-amber-400">FuseBreadcrumbs</span> :<span class="text-sky-300">items</span>=<span class="text-emerald-300">"staticCrumbItems"</span> /&gt;</p>
             </div>
           </div>
 
-          <div class="p-6 border border-outline dark:border-dark-outline rounded-xl bg-surface dark:bg-dark-surface space-y-4">
-            <div class="flex items-center justify-between">
-              <h3 class="font-bold text-sm">Dynamic Global Store via useFuseBreadcrumbs()</h3>
+          <!-- Breadcrumbs Demo Card 2: Dynamic Store -->
+          <div class="border border-outline dark:border-dark-outline rounded-xl bg-surface dark:bg-dark-surface shadow-xs overflow-hidden">
+            <div class="p-4 border-b border-outline dark:border-dark-outline flex items-center justify-between gap-4 bg-muted/20 dark:bg-dark-muted/20">
+              <div class="text-xs font-bold uppercase tracking-wider text-secondary dark:text-dark-secondary">
+                Style 2: Dynamic Global Store via useFuseBreadcrumbs()
+              </div>
+              <div class="flex items-center gap-1 bg-muted/60 dark:bg-dark-muted/60 p-1 rounded-lg border border-outline dark:border-dark-outline">
+                <button
+                  type="button"
+                  class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5"
+                  :class="demoView.breadcrumbs2 === 'preview' ? 'bg-surface dark:bg-dark-surface shadow-xs text-foreground dark:text-dark-foreground' : 'text-foreground/60 dark:text-dark-foreground/60 hover:text-foreground'"
+                  @click="demoView.breadcrumbs2 = 'preview'"
+                >
+                  <Eye class="w-3.5 h-3.5" />
+                  <span>Preview</span>
+                </button>
+                <button
+                  type="button"
+                  class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5"
+                  :class="demoView.breadcrumbs2 === 'code' ? 'bg-surface dark:bg-dark-surface shadow-xs text-foreground dark:text-dark-foreground' : 'text-foreground/60 dark:text-dark-foreground/60 hover:text-foreground'"
+                  @click="demoView.breadcrumbs2 = 'code'"
+                >
+                  <Code class="w-3.5 h-3.5" />
+                  <span>Code</span>
+                </button>
+              </div>
+            </div>
+
+            <div v-show="demoView.breadcrumbs2 === 'preview'" class="p-6 space-y-4">
+              <div class="flex justify-end">
+                <button
+                  type="button"
+                  class="px-3 py-1.5 text-xs font-medium rounded-lg bg-primary text-white shadow-xs"
+                  @click="addBreadcrumb({ label: `Step #${Math.floor(Math.random() * 100)}` })"
+                >
+                  + Add Dynamic Step
+                </button>
+              </div>
+              <FuseBreadcrumbs />
+            </div>
+
+            <div v-show="demoView.breadcrumbs2 === 'code'" class="p-5 bg-black/95 text-slate-100 font-mono text-xs overflow-x-auto relative space-y-1">
               <button
                 type="button"
-                class="px-3 py-1.5 text-xs font-medium rounded-lg bg-primary text-white shadow-xs"
-                @click="addBreadcrumb({ label: `Step #${Math.floor(Math.random() * 100)}` })"
+                class="absolute top-4 right-4 px-2.5 py-1 rounded bg-white/10 hover:bg-white/20 text-white text-[11px] font-sans flex items-center gap-1 transition-colors"
+                @click="copyCode(
+                  `import { useFuseBreadcrumbs } from '@maderobills/fuse-ui'\nconst { setBreadcrumbs, addBreadcrumb } = useFuseBreadcrumbs()\n\n// Anywhere in your app:\nsetBreadcrumbs([{ label: 'Home', route: '/' }, { label: 'Invoices' }])`,
+                  'crumb2-code'
+                )"
               >
-                + Add Step
+                <Check v-if="copiedKey === 'crumb2-code'" class="w-3 h-3 text-emerald-400" />
+                <Copy v-else class="w-3 h-3" />
+                <span>{{ copiedKey === 'crumb2-code' ? 'Copied!' : 'Copy Code' }}</span>
               </button>
-            </div>
-            <div class="p-4 rounded-xl border border-outline/50 dark:border-dark-outline/50 bg-muted/20 dark:bg-dark-muted/20">
-              <FuseBreadcrumbs />
+
+              <p class="text-slate-400">// In template (zero props needed):</p>
+              <p>&lt;<span class="text-amber-400">FuseBreadcrumbs</span> /&gt;</p>
+              <p class="text-slate-400 pt-2">// In script:</p>
+              <p><span class="text-purple-400">import</span> { useFuseBreadcrumbs } <span class="text-purple-400">from</span> <span class="text-emerald-300">'@maderobills/fuse-ui'</span></p>
+              <p><span class="text-purple-400">const</span> { setBreadcrumbs, addBreadcrumb } = useFuseBreadcrumbs()</p>
             </div>
           </div>
         </div>
@@ -957,47 +1368,101 @@ const { isDark, toggleTheme, setTheme } = useFuseTheme()
             </p>
           </div>
 
-          <!-- Interactive Role Switcher -->
-          <div class="p-6 border border-outline dark:border-dark-outline rounded-xl bg-surface dark:bg-dark-surface space-y-4">
-            <div class="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <h3 class="font-bold text-sm">Switch Simulated User Role:</h3>
-                <p class="text-xs text-foreground/60 dark:text-dark-foreground/60">Watch how navigation items filter in real time</p>
+          <!-- RBAC Demo Card with [Preview] | [Code] Switcher -->
+          <div class="border border-outline dark:border-dark-outline rounded-xl bg-surface dark:bg-dark-surface shadow-xs overflow-hidden">
+            <div class="p-4 border-b border-outline dark:border-dark-outline flex items-center justify-between gap-4 bg-muted/20 dark:bg-dark-muted/20">
+              <div class="text-xs font-bold uppercase tracking-wider text-secondary dark:text-dark-secondary">
+                RBAC Dynamic Filtering Demo
               </div>
-              <div class="flex flex-wrap gap-2">
+              <div class="flex items-center gap-1 bg-muted/60 dark:bg-dark-muted/60 p-1 rounded-lg border border-outline dark:border-dark-outline">
                 <button
-                  v-for="r in availableRoles"
-                  :key="r.value"
                   type="button"
-                  class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all"
-                  :class="currentDemoRole === r.value ? 'bg-primary text-white shadow-xs' : 'bg-muted dark:bg-dark-muted hover:bg-outline/40'"
-                  @click="currentDemoRole = r.value"
+                  class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5"
+                  :class="demoView.rbac === 'preview' ? 'bg-surface dark:bg-dark-surface shadow-xs text-foreground dark:text-dark-foreground' : 'text-foreground/60 dark:text-dark-foreground/60 hover:text-foreground'"
+                  @click="demoView.rbac = 'preview'"
                 >
-                  {{ r.label }}
+                  <Eye class="w-3.5 h-3.5" />
+                  <span>Preview</span>
+                </button>
+                <button
+                  type="button"
+                  class="px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5"
+                  :class="demoView.rbac === 'code' ? 'bg-surface dark:bg-dark-surface shadow-xs text-foreground dark:text-dark-foreground' : 'text-foreground/60 dark:text-dark-foreground/60 hover:text-foreground'"
+                  @click="demoView.rbac = 'code'"
+                >
+                  <Code class="w-3.5 h-3.5" />
+                  <span>Code</span>
                 </button>
               </div>
             </div>
 
-            <!-- Dynamic Filtered Navigation Preview -->
-            <div class="p-4 rounded-xl bg-muted/20 dark:bg-dark-muted/20 border border-outline/50 dark:border-dark-outline/50 space-y-2">
-              <span class="text-xs font-bold uppercase tracking-wider text-primary dark:text-dark-primary">
-                Accessible Sections for [{{ currentDemoRole.toUpperCase() }}]:
-              </span>
-              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
-                <div
-                  v-for="group in getFilteredNavItems('', currentDemoRole)"
-                  :key="group.label"
-                  class="p-3 rounded-lg bg-surface dark:bg-dark-surface border border-outline dark:border-dark-outline space-y-1"
-                >
-                  <div class="font-bold text-xs flex items-center gap-1.5 text-primary dark:text-dark-primary">
-                    <component :is="group.icon" class="w-3.5 h-3.5" />
-                    <span>{{ group.label }}</span>
-                  </div>
-                  <ul class="text-[11px] text-foreground/70 dark:text-dark-foreground/70 pl-5 list-disc space-y-0.5">
-                    <li v-for="child in group.children" :key="child.label">{{ child.label }}</li>
-                  </ul>
+            <!-- Preview Mode -->
+            <div v-show="demoView.rbac === 'preview'" class="p-6 space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <h3 class="font-bold text-sm">Switch Simulated User Role:</h3>
+                  <p class="text-xs text-foreground/60 dark:text-dark-foreground/60">Watch how navigation items filter in real time</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <button
+                    v-for="r in availableRoles"
+                    :key="r.value"
+                    type="button"
+                    class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all"
+                    :class="currentDemoRole === r.value ? 'bg-primary text-white shadow-xs' : 'bg-muted dark:bg-dark-muted hover:bg-outline/40'"
+                    @click="currentDemoRole = r.value"
+                  >
+                    {{ r.label }}
+                  </button>
                 </div>
               </div>
+
+              <div class="p-4 rounded-xl bg-muted/20 dark:bg-dark-muted/20 border border-outline/50 dark:border-dark-outline/50 space-y-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-primary dark:text-dark-primary">
+                  Accessible Sections for [{{ currentDemoRole.toUpperCase() }}]:
+                </span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+                  <div
+                    v-for="group in getFilteredNavItems('', currentDemoRole)"
+                    :key="group.label"
+                    class="p-3 rounded-lg bg-surface dark:bg-dark-surface border border-outline dark:border-dark-outline space-y-1"
+                  >
+                    <div class="font-bold text-xs flex items-center gap-1.5 text-primary dark:text-dark-primary">
+                      <component :is="group.icon" class="w-3.5 h-3.5" />
+                      <span>{{ group.label }}</span>
+                    </div>
+                    <ul class="text-[11px] text-foreground/70 dark:text-dark-foreground/70 pl-5 list-disc space-y-0.5">
+                      <li v-for="child in group.children" :key="child.label">{{ child.label }}</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Code Mode -->
+            <div v-show="demoView.rbac === 'code'" class="p-5 bg-black/95 text-slate-100 font-mono text-xs overflow-x-auto relative space-y-1">
+              <button
+                type="button"
+                class="absolute top-4 right-4 px-2.5 py-1 rounded bg-white/10 hover:bg-white/20 text-white text-[11px] font-sans flex items-center gap-1 transition-colors"
+                @click="copyCode(
+                  `export const getNavItemsForRole = (role) => {\n  return navItems.map(group => ({\n    ...group,\n    children: group.children.filter(item => !item.roles || item.roles.includes(role))\n  })).filter(group => group.children.length > 0)\n}`,
+                  'rbac-code'
+                )"
+              >
+                <Check v-if="copiedKey === 'rbac-code'" class="w-3 h-3 text-emerald-400" />
+                <Copy v-else class="w-3 h-3" />
+                <span>{{ copiedKey === 'rbac-code' ? 'Copied!' : 'Copy Code' }}</span>
+              </button>
+
+              <p class="text-slate-400">// Filter Navigation Items by Role</p>
+              <p><span class="text-purple-400">export const</span> getNavItemsForRole = (role) =&gt; {</p>
+              <p class="pl-4"><span class="text-purple-400">return</span> navItems</p>
+              <p class="pl-8">.map(group =&gt; ({</p>
+              <p class="pl-12">...group,</p>
+              <p class="pl-12">children: group.children?.filter(item =&gt; !item.roles || item.roles.includes(role))</p>
+              <p class="pl-8">}))</p>
+              <p class="pl-8">.filter(group =&gt; !group.children || group.children.length &gt; 0)</p>
+              <p>}</p>
             </div>
           </div>
         </div>
@@ -1045,25 +1510,6 @@ const { isDark, toggleTheme, setTheme } = useFuseTheme()
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-
-        <!-- ========================================================= -->
-        <!-- FALLBACK DEFAULT VIEW                                     -->
-        <!-- ========================================================= -->
-        <div v-else class="space-y-6">
-          <div class="p-8 border border-outline dark:border-dark-outline rounded-2xl bg-surface dark:bg-dark-surface text-center space-y-3">
-            <h2 class="text-xl font-bold">Section Under Active Development</h2>
-            <p class="text-xs text-foreground/60 dark:text-dark-foreground/60">
-              Click any component on the left sidebar to explore its full live documentation.
-            </p>
-            <button
-              type="button"
-              class="px-4 py-2 bg-primary text-white text-xs font-bold rounded-lg shadow-xs"
-              @click="router.push('/docs/whats-new')"
-            >
-              Return to What's New
-            </button>
           </div>
         </div>
 
