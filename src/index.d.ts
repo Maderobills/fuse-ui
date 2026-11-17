@@ -51,6 +51,50 @@ export interface FuseGreetBarProps {
   mobileMenuOffset?: boolean
 }
 
+export interface HeaderNavItem {
+  label: string
+  route?: string
+  path?: string
+  icon?: any
+  children?: HeaderNavItem[]
+}
+
+export interface HeaderAction {
+  key: string
+  label: string
+  icon?: any
+  route?: string
+  badge?: string | number
+}
+
+export interface HeaderProfileMenuItem {
+  key: string
+  label: string
+  icon?: any
+  route?: string
+  tone?: 'error' | string
+}
+
+export type HeaderSection = 'logo' | 'brand' | 'nav' | 'spacer' | 'actions' | 'profile'
+
+export interface FuseHeaderProps {
+  brandName?: string
+  brandTagline?: string
+  logoLight?: string
+  logoDark?: string
+  homeRoute?: string
+  navItems?: HeaderNavItem[]
+  actions?: HeaderAction[]
+  user?: FuseUser | null
+  profileMenu?: HeaderProfileMenuItem[]
+  showLogout?: boolean
+  sticky?: boolean
+  customizable?: boolean
+  storageKey?: string
+  layout?: HeaderSection[]
+  hidden?: HeaderSection[]
+}
+
 export interface FuseThemeTogglerProps {
   isDark?: boolean
 }
@@ -241,6 +285,7 @@ export declare const FuseInput: DefineComponent<FuseInputProps>
 export declare const FuseFilters: DefineComponent<FuseFiltersProps>
 export declare const FuseBreadcrumbs: DefineComponent<FuseBreadcrumbsProps>
 export declare const FuseTable: DefineComponent<FuseTableProps>
+export declare const FuseHeader: DefineComponent<FuseHeaderProps>
 
 export declare const FUSE_THEME_KEY: string
 export declare const FUSE_BREADCRUMBS_KEY: string
