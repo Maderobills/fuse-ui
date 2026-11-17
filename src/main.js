@@ -6,6 +6,7 @@ import FuseInput from './components/FuseInput.vue'
 import FuseFilters from './components/FuseFilters.vue'
 import FuseBreadcrumbs from './components/FuseBreadcrumbs.vue'
 import FuseTable from './components/FuseTable.vue'
+import FuseHeader from './components/FuseHeader.vue'
 
 import { useFuseTheme, FUSE_THEME_KEY } from './composables/useFuseTheme.js'
 import { useFuseBreadcrumbs, FUSE_BREADCRUMBS_KEY } from './composables/useFuseBreadcrumbs.js'
@@ -19,6 +20,7 @@ export {
   FuseFilters,
   FuseBreadcrumbs,
   FuseTable,
+  FuseHeader,
   useFuseTheme,
   useFuseBreadcrumbs,
   FUSE_THEME_KEY,
@@ -35,7 +37,7 @@ export default {
     app.component('FuseFilters', FuseFilters)
     app.component('FuseBreadcrumbs', FuseBreadcrumbs)
     app.component('FuseTable', FuseTable)
-
+    app.component('FuseHeader', FuseHeader)
     app.provide(FUSE_THEME_KEY, useFuseTheme())
     app.provide(FUSE_BREADCRUMBS_KEY, useFuseBreadcrumbs())
   },

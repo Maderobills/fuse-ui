@@ -1,6 +1,30 @@
 <script setup>
 import { ref } from 'vue'
 import { Terminal, Check, Copy } from '@lucide/vue'
+import { FuseHeader } from '../main.js'
+
+import { Home, Package, Users, Bell, Plus, User, Settings } from '@lucide/vue'
+
+const navItems = [
+  { label: 'Dashboard', route: '/dashboard', icon: Home },
+  { label: 'Inventory', icon: Package, children: [
+    { label: 'Items', route: '/inventory/items' },
+    { label: 'Suppliers', route: '/inventory/suppliers' },
+  ] },
+  { label: 'Customers', route: '/customers', icon: Users },
+]
+
+const actions = [
+  { key: 'new', label: 'New sale', icon: Plus },
+  { key: 'alerts', label: 'Notifications', icon: Bell, route: '/notifications', badge: 3 },
+]
+
+const profileMenu = [
+  { key: 'profile', label: 'My profile', icon: User, route: '/profile' },
+  { key: 'settings', label: 'Settings', icon: Settings, route: '/settings' },
+]
+
+const user = { name: 'Ama Mensah', email: 'ama@shop.com', role: 'admin', avatar: '' }
 
 const copied = ref(false)
 const copyInstall = () => {
@@ -85,6 +109,24 @@ const copyInstall = () => {
         <p>app.mount(<span class="text-emerald-300">'#app'</span>)</p>
       </div>
     </div>
+    <FuseHeader
+    brand-name="StockFuse"
+    brand-tagline="Inventory & POS"
+    logo-light="/logo-colour.png"
+    logo-dark="/logo-white.png"
+    home-route="/dashboard"
+    :nav-items="navItems"
+    :actions="actions"
+    :user="user"
+    :profile-menu="profileMenu"
+    sticky
+    customizable
+    storage-key="stockfuse-header"
+    @action="onAction"
+    @logout="signOut"
+  >
+    <template #actions><FuseThemeToggler /></template>
+  </FuseHeader>
   </div>
 </template>
 
