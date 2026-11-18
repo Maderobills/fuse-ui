@@ -25,11 +25,31 @@ A sleek, responsive, and customizable Vue 3 UI component suite crafted for moder
 
 ## 📦 Installation
 
-```bash
-# Install directly from GitHub
-npm install github:Maderobills/fuse-ui
+Install via npm registry:
 
-# Ensure peer dependencies are installed
+```bash
+# npm
+npm install @maderobills/fuse-ui
+
+# pnpm
+pnpm add @maderobills/fuse-ui
+
+# yarn
+yarn add @maderobills/fuse-ui
+
+# bun
+bun add @maderobills/fuse-ui
+```
+
+Or install directly from GitHub:
+
+```bash
+npm install github:Maderobills/fuse-ui
+```
+
+Ensure peer dependencies are installed:
+
+```bash
 npm install vue-router @lucide/vue
 ```
 

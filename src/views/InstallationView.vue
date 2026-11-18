@@ -1,17 +1,6 @@
 <script setup>
-import { ref } from 'vue'
-import { Terminal, Check, Copy } from '@lucide/vue'
-
-const copied = ref(false)
-const copyInstall = () => {
-  if (navigator?.clipboard) {
-    navigator.clipboard.writeText('npm install github:Maderobills/fuse-ui')
-    copied.value = true
-    setTimeout(() => {
-      copied.value = false
-    }, 2000)
-  }
-}
+import { Terminal } from '@lucide/vue'
+import InstallTabs from './components/InstallTabs.vue'
 </script>
 
 <template>
@@ -28,26 +17,21 @@ const copyInstall = () => {
     </div>
 
     <!-- Step 1: Install -->
-    <div class="p-6 border border-outline dark:border-dark-outline rounded-xl bg-surface dark:bg-dark-surface space-y-3">
-      <h3 class="font-bold text-base flex items-center gap-2">
-        <span class="w-6 h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">1</span>
-        <span>Install the Package</span>
-      </h3>
-      <p class="text-xs text-foreground/70 dark:text-dark-foreground/70">
-        Run this command in your project terminal:
-      </p>
-      <div class="bg-black/90 text-emerald-400 p-3.5 rounded-xl text-xs font-mono flex items-center justify-between">
-        <code>npm install github:Maderobills/fuse-ui</code>
-        <button
-          type="button"
-          class="px-2.5 py-1 text-[11px] rounded bg-white/10 text-white hover:bg-white/20 transition-colors flex items-center gap-1"
-          @click="copyInstall"
-        >
-          <Check v-if="copied" class="w-3 h-3 text-emerald-400" />
-          <Copy v-else class="w-3 h-3" />
-          <span>{{ copied ? 'Copied!' : 'Copy' }}</span>
-        </button>
+    <div class="p-6 border border-outline dark:border-dark-outline rounded-xl bg-surface dark:bg-dark-surface space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <h3 class="font-bold text-base flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">1</span>
+          <span>Install the Package</span>
+        </h3>
+        <span class="text-xs text-foreground/60 dark:text-dark-foreground/60">
+          Supports npm, pnpm, yarn, and bun
+        </span>
       </div>
+      <p class="text-xs text-foreground/70 dark:text-dark-foreground/70">
+        Choose your package manager and install from the npm registry or directly from GitHub:
+      </p>
+      
+      <InstallTabs />
     </div>
 
     <!-- Step 2: Theme CSS -->
