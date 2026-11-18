@@ -3,6 +3,7 @@ import {
   BookOpen,
   Layers,
   Compass,
+  PanelTop,
   FolderTree,
   LayoutDashboard,
   Table as TableIcon,
