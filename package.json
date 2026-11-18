@@ -42,7 +42,10 @@
     "./theme.css": "./dist/theme.css"
   },
   "files": [
-    "dist"
+    "dist/index.js",
+    "dist/index.cjs",
+    "dist/index.d.ts",
+    "dist/theme.css"
   ],
   "scripts": {
     "dev": "vite",
