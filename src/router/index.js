@@ -107,6 +107,22 @@ export const routes = [
     },
   },
   {
+    path: '/docs/components/header',
+    name: 'docs-header',
+    component: () => import('../views/HeaderDocView.vue'),
+    meta: {
+      id: 'header',
+      title: 'FuseHeader — Top Application Navigation Bar',
+      description: 'Customizable top application header with dropdown navigation, actions, profile popover, and section reordering.',
+      category: 'Layout & Navigation',
+      breadcrumbs: [
+        { label: 'Documentation', route: '/docs/whats-new', icon: 'sparkles' },
+        { label: 'Layout & Navigation' },
+        { label: 'FuseHeader' },
+      ],
+    },
+  },
+  {
     path: '/docs/components/breadcrumbs',
     name: 'docs-breadcrumbs',
     component: () => import('../views/BreadcrumbsDocView.vue'),

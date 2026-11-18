@@ -1,30 +1,6 @@
 <script setup>
 import { ref } from 'vue'
 import { Terminal, Check, Copy } from '@lucide/vue'
-import { FuseHeader } from '../main.js'
-
-import { Home, Package, Users, Bell, Plus, User, Settings } from '@lucide/vue'
-
-const navItems = [
-  { label: 'Dashboard', route: '/dashboard', icon: Home },
-  { label: 'Inventory', icon: Package, children: [
-    { label: 'Items', route: '/inventory/items' },
-    { label: 'Suppliers', route: '/inventory/suppliers' },
-  ] },
-  { label: 'Customers', route: '/customers', icon: Users },
-]
-
-const actions = [
-  { key: 'new', label: 'New sale', icon: Plus },
-  { key: 'alerts', label: 'Notifications', icon: Bell, route: '/notifications', badge: 3 },
-]
-
-const profileMenu = [
-  { key: 'profile', label: 'My profile', icon: User, route: '/profile' },
-  { key: 'settings', label: 'Settings', icon: Settings, route: '/settings' },
-]
-
-const user = { name: 'Ama Mensah', email: 'ama@shop.com', role: 'admin', avatar: '' }
 
 const copied = ref(false)
 const copyInstall = () => {
@@ -109,24 +85,21 @@ const copyInstall = () => {
         <p>app.mount(<span class="text-emerald-300">'#app'</span>)</p>
       </div>
     </div>
-    <FuseHeader
-    brand-name="StockFuse"
-    brand-tagline="Inventory & POS"
-    logo-light="/logo-colour.png"
-    logo-dark="/logo-white.png"
-    home-route="/dashboard"
-    :nav-items="navItems"
-    :actions="actions"
-    :user="user"
-    :profile-menu="profileMenu"
-    sticky
-    customizable
-    storage-key="stockfuse-header"
-    @action="onAction"
-    @logout="signOut"
-  >
-    <template #actions><FuseThemeToggler /></template>
-  </FuseHeader>
+    <!-- Step 4: Component Import Example -->
+    <div class="p-6 border border-outline dark:border-dark-outline rounded-xl bg-surface dark:bg-dark-surface space-y-3">
+      <h3 class="font-bold text-base flex items-center gap-2">
+        <span class="w-6 h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">4</span>
+        <span>Use Components in Your SFCs</span>
+      </h3>
+      <p class="text-xs text-foreground/70 dark:text-dark-foreground/70">
+        You can use components globally or import them individually with full TypeScript support:
+      </p>
+      <div class="bg-black/90 text-slate-100 p-4 rounded-xl text-xs font-mono space-y-1">
+        <p><span class="text-slate-400">&lt;script setup&gt;</span></p>
+        <p><span class="text-purple-400">import</span> { FuseHeader, FuseSideBar, FuseGreetBar, FuseTable, FuseStatCard } <span class="text-purple-400">from</span> <span class="text-emerald-300">'@maderobills/fuse-ui'</span></p>
+        <p><span class="text-slate-400">&lt;/script&gt;</span></p>
+      </div>
+    </div>
   </div>
 </template>
 

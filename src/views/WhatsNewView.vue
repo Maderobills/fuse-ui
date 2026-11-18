@@ -4,6 +4,7 @@ import {
   Sparkles,
   Table as TableIcon,
   Compass,
+  PanelTop,
   FolderTree,
   DollarSign,
   ShieldCheck,
@@ -65,6 +66,18 @@ const router = useRouter()
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="p-5 rounded-xl border border-secondary/30 bg-secondary/5 dark:bg-dark-secondary/10 space-y-2.5 shadow-xs">
+          <div class="flex items-center gap-2">
+            <span class="p-2 rounded-lg bg-secondary/15 text-secondary dark:bg-dark-secondary/20 dark:text-dark-secondary">
+              <PanelTop class="w-4 h-4" />
+            </span>
+            <h3 class="font-bold text-sm">FuseHeader Component</h3>
+          </div>
+          <p class="text-xs text-foreground/70 dark:text-dark-foreground/70 leading-relaxed">
+            All-new top application bar featuring multi-level dropdowns, quick actions with badge counters, user profile popover, sticky placement, and user-customizable section ordering with <code class="bg-muted dark:bg-dark-muted px-1.5 py-0.5 rounded text-[11px]">localStorage</code> persistence.
+          </p>
+        </div>
+
         <div class="p-5 rounded-xl border border-outline dark:border-dark-outline bg-surface dark:bg-dark-surface space-y-2.5 shadow-xs">
           <div class="flex items-center gap-2">
             <span class="p-2 rounded-lg bg-primary/10 text-primary dark:bg-dark-primary/10 dark:text-dark-primary">

@@ -11,6 +11,7 @@ A sleek, responsive, and customizable Vue 3 UI component suite crafted for moder
 - **🧩 Core Components**:
   - `FuseSideBar` — Collapsible navigation sidebar with submenus, tooltips in collapsed view, user profile summary, and role badges.
   - `FuseGreetBar` — Contextual top bar with page titles, descriptions, dynamic greetings ("Good morning" or "Welcome back"), breadcrumbs, and user profile navigation.
+  - `FuseHeader` — Reconfigurable top application bar with brand branding, nested navigation dropdowns, quick actions with notification badges, user profile popover, sticky positioning, and interactive section reordering with localStorage persistence.
   - `FuseThemeToggler` — Animated smooth theme switcher (supports standalone self-management or controlled `v-model`).
   - `FuseStatCard` — KPI and metrics card with automated currency formatting, compact notations (e.g. `1.2M`), tone color-coding, trend indicators, and skeleton loaders.
   - `FuseInput` — All-in-one form input component supporting text, password (with show/hide eye toggle), searchable select & multiselect, textarea, radio/checkbox groups, and file dropzone with preview.
@@ -335,7 +336,135 @@ The top navigation and context bar. It automatically or manually displays page t
 
 ---
 
-### 3. `FuseThemeToggler`
+### 3. `FuseHeader`
+
+A modern, responsive, and reconfigurable top application bar. It brings together logo and brand branding, multi-level dropdown navigation (desktop popovers and mobile hamburger menu), quick action buttons with notification badges, user profile dropdown with logout, sticky top placement, and an interactive section customizer that allows end users to reorder or hide sections with zero-dependency `localStorage` persistence.
+
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `brandName` | `String` | `''` | Brand or application title. |
+| `brandTagline` | `String` | `''` | Secondary subtitle or tagline beneath the brand title. |
+| `logoLight` | `String` | `''` | URL or asset path for the light-mode logo image. |
+| `logoDark` | `String` | `''` | URL or asset path for the dark-mode logo image. |
+| `homeRoute` | `String` | `'/'` | Destination path when clicking the brand or logo. |
+| `navItems` | `Array` | `[]` | Navigation items `[{ label, route?, path?, icon?, children?: [...] }]`. |
+| `actions` | `Array` | `[]` | Quick action buttons `[{ key, label, icon?, route?, badge? }]`. |
+| `user` | `Object \| null` | `null` | Current user `{ name, email, role, avatar }`. When `null`, displays a "Sign in" button. |
+| `profileMenu` | `Array` | `[]` | Menu items in user dropdown `[{ key, label, icon?, route?, tone?: 'error' }]`. |
+| `showLogout` | `Boolean` | `true` | Renders a logout button at the bottom of the profile dropdown. |
+| `sticky` | `Boolean` | `false` | Fixes the header to the top of the viewport (`sticky top-0 z-40`). |
+| `customizable` | `Boolean` | `false` | Shows the layout customizer button allowing users to reorder & toggle sections. |
+| `storageKey` | `String` | `''` | `localStorage` key to persist customizer layout order and hidden sections. |
+| `v-model:layout` | `Array` | `['logo', 'brand', 'nav', 'spacer', 'actions', 'profile']` | Two-way binding for section ordering. |
+| `v-model:hidden` | `Array` | `[]` | Two-way binding for disabled section keys. |
+
+#### Events
+
+| Event | Payload | Description |
+| :--- | :--- | :--- |
+| `@action` | `(key: string)` | Fired when a quick action without a `route` is clicked. |
+| `@profile-select` | `(key: string)` | Fired when a profile menu item without a `route` is clicked. |
+| `@logout` | - | Fired when the user clicks the logout button in profile popover. |
+| `@login` | - | Fired when the guest "Sign in" button is clicked. |
+| `@update:layout` | `(layout: string[])` | Fired when section order is modified via the customizer. |
+| `@update:hidden` | `(hidden: string[])` | Fired when section visibility is toggled via the customizer. |
+
+#### Slots
+- `#logo`: Custom brand logo template replacing default image rendering.
+- `#brand`: Custom brand name and tagline template.
+- `#actions`: Additional action items placed beside action buttons (e.g. `<FuseThemeToggler />`).
+
+#### Reconfigurable Sections
+`FuseHeader` splits its contents into 6 modular sections:
+- `logo`: Light/dark adaptive brand logo image.
+- `brand`: Brand title and subtitle.
+- `nav`: Desktop popover navigation links and mobile dropdown menu.
+- `spacer`: Invisible flex divider that pushes subsequent sections to the far right.
+- `actions`: Quick action icon buttons with badge counts + `#actions` slot.
+- `profile`: Authenticated user pill and popover, or guest sign-in button.
+
+When `customizable` is enabled, users can click the sliders icon to toggle visibility and reorder sections with up/down arrows. Specifying `storageKey="my-header"` saves the user's preferences automatically in `localStorage`.
+
+#### Usage Examples:
+
+```vue
+<!-- 1. Full Enterprise Header with Customizer & Persistence -->
+<script setup>
+import { FuseHeader, FuseThemeToggler } from '@maderobills/fuse-ui'
+import { Home, Package, Users, Plus, Bell, User, Settings } from '@lucide/vue'
+
+const navItems = [
+  { label: 'Dashboard', route: '/dashboard', icon: Home },
+  {
+    label: 'Inventory',
+    icon: Package,
+    children: [
+      { label: 'Items', route: '/inventory/items' },
+      { label: 'Suppliers', route: '/inventory/suppliers' },
+    ],
+  },
+  { label: 'Customers', route: '/customers', icon: Users },
+]
+
+const actions = [
+  { key: 'new', label: 'New sale', icon: Plus },
+  { key: 'alerts', label: 'Notifications', icon: Bell, route: '/notifications', badge: 3 },
+]
+
+const profileMenu = [
+  { key: 'profile', label: 'My profile', icon: User, route: '/profile' },
+  { key: 'settings', label: 'Settings', icon: Settings, route: '/settings' },
+]
+
+const user = { name: 'Ama Mensah', email: 'ama@shop.com', role: 'admin', avatar: '' }
+</script>
+
+<template>
+  <FuseHeader
+    brand-name="StockFuse"
+    brand-tagline="Inventory & POS"
+    logo-light="/logo-colour.png"
+    logo-dark="/logo-white.png"
+    home-route="/dashboard"
+    :nav-items="navItems"
+    :actions="actions"
+    :user="user"
+    :profile-menu="profileMenu"
+    sticky
+    customizable
+    storage-key="stockfuse-header"
+    @action="(key) => console.log('Action:', key)"
+    @logout="() => console.log('Logged out')"
+  >
+    <template #actions>
+      <FuseThemeToggler />
+    </template>
+  </FuseHeader>
+</template>
+```
+
+```vue
+<!-- 2. Guest / Public State -->
+<FuseHeader
+  brand-name="AppPortal"
+  home-route="/"
+  :nav-items="[
+    { label: 'Features', route: '/features' },
+    { label: 'Pricing', route: '/pricing' },
+    { label: 'Documentation', route: '/docs' },
+  ]"
+  :user="null"
+  @login="openLoginModal"
+>
+  <template #actions>
+    <FuseThemeToggler />
+  </template>
+</FuseHeader>
+```
+
+---
+
+### 4. `FuseThemeToggler`
 
 | Prop / Event | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
@@ -345,7 +474,7 @@ The top navigation and context bar. It automatically or manually displays page t
 
 ---
 
-### 4. `FuseStatCard`
+### 5. `FuseStatCard`
 
 A versatile card component for rendering numbers, monetary metrics, indicators, and trends.
 
@@ -375,7 +504,7 @@ A versatile card component for rendering numbers, monetary metrics, indicators, 
 
 ---
 
-### 5. `FuseInput`
+### 6. `FuseInput`
 
 An all-in-one input component supporting text fields, secure passwords with toggle, selects, radio/checkboxes, textareas, and file dropzones.
 
@@ -468,7 +597,7 @@ An all-in-one input component supporting text fields, secure passwords with togg
 
 ---
 
-### 6. `FuseFilters`
+### 7. `FuseFilters`
 
 A responsive data and table filtering toolbar. Handles search inputs with optional debouncing, multi-column filter select dropdowns, active state management (only non-empty filters are stored in the model), and a "Clear All Filters" button.
 
@@ -572,7 +701,7 @@ const filterConfigs = [
 
 ---
 
-### 7. `FuseBreadcrumbs`
+### 8. `FuseBreadcrumbs`
 
 A responsive, icon-capable breadcrumb component. Automatically keeps the current page in view on narrow/mobile viewports by smoothly auto-scrolling to the end of the trail. Works either with a local `:items` prop or seamlessly connects to the global reactive trail set via `useFuseBreadcrumbs()`.
 
@@ -610,7 +739,7 @@ const breadcrumbsList = [
 
 ---
 
-### 8. `FuseTable`
+### 9. `FuseTable`
 
 A feature-complete data table designed for SaaS products and admin dashboards. Out of the box, it provides client or server-side pagination, sorting, row selection (with bulk actions), automatic `FuseFilters` integration, customizable empty states, loading skeletons, and specialized cell types.
 
@@ -765,7 +894,7 @@ const handleAction = ({ action, row }) => {
 
 ---
 
-### 9. `useFuseBreadcrumbs()` Composable
+### 10. `useFuseBreadcrumbs()` Composable
 
 A reactive module-level composable that lets any nested view, modal, or tab update the active breadcrumb trail shown in your main layout or header:
 
@@ -796,7 +925,7 @@ onMounted(() => {
 
 ---
 
-### 10. `useFuseTheme()` Composable
+### 11. `useFuseTheme()` Composable
 
 Use this anywhere in your app to read or change the theme without creating custom wrappers:
 

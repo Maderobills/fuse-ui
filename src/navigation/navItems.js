@@ -106,6 +106,15 @@ export const navItems = [
         description: 'Universal page header with greetings, titles, breadcrumbs, and slots.',
       },
       {
+        label: 'FuseHeader',
+        icon: PanelTop,
+        route: '/docs/components/header',
+        id: 'header',
+        badge: 'New',
+        badgeTone: 'secondary',
+        description: 'Customizable top application bar with navigation, quick actions, profile menu, and section reordering.',
+      },
+      {
         label: 'FuseBreadcrumbs',
         icon: FolderTree,
         route: '/docs/components/breadcrumbs',

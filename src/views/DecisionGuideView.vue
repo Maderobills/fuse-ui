@@ -34,6 +34,12 @@ import { Lightbulb } from '@lucide/vue'
               <td class="p-4 text-foreground/70 dark:text-dark-foreground/70">Handles mobile overlay drawer, collapsible widths, and tooltips automatically.</td>
             </tr>
             <tr class="hover:bg-muted/10">
+              <td class="p-4 font-bold text-primary dark:text-dark-primary">FuseHeader</td>
+              <td class="p-4">Top horizontal application header & nav</td>
+              <td class="p-4">Top-nav layouts, SaaS headers with quick actions, profile menu, and reconfigurable sections.</td>
+              <td class="p-4 text-foreground/70 dark:text-dark-foreground/70">Includes dropdown navigation, responsive mobile popover, quick action badges, and zero-dependency section customizer with localStorage persistence.</td>
+            </tr>
+            <tr class="hover:bg-muted/10">
               <td class="p-4 font-bold text-primary dark:text-dark-primary">FuseGreetBar</td>
               <td class="p-4">Top contextual page banner</td>
               <td class="p-4">Above main view content to show page title, breadcrumb trail, and actions.</td>
