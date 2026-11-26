@@ -48,7 +48,7 @@ onBeforeUnmount(detach)
     >
       <div
         v-if="open"
-        class="absolute top-full mt-2 z-50 bg-surface dark:bg-dark-surface border border-outline dark:border-dark-outline rounded-xl shadow-lg"
+        class="absolute top-full mt-2 z-50 bg-surface dark:bg-dark-surface border border-outline dark:border-dark-outline rounded-xl shadow-lg max-w-[calc(100vw-1.5rem)] overflow-hidden"
         :class="[align === 'right' ? 'right-0 origin-top-right' : 'left-0 origin-top-left', panelClass]"
       >
         <slot :close="close" />

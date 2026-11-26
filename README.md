@@ -315,7 +315,8 @@ The top navigation and context bar. It automatically or manually displays page t
 | `autoRoute` | `Boolean` | `true` | When `title` and `greeting` are omitted, auto-derives title & description from `route.meta` or `route.name`. |
 | `user` | `Object` | `null` | `{ name, email, avatar }` used for greetings and right profile pill. |
 | `profileRoute` | `String` | `'/profile'` | Destination when clicking the user profile pill. |
-| `mobileMenuOffset` | `Boolean` | `true` | Adds `pl-12 lg:pl-0` so the fixed mobile menu hamburger doesn't overlap text. |
+| `mobileMenuOffset` | `Boolean` | `true` | Adds 56px–64px (`pl-14 sm:pl-16 lg:pl-0`) clearance on mobile so text never overlaps FuseSideBar's fixed toggle button. |
+| `sticky` | `Boolean` | `false` | Pins greetbar to top of viewport with `sticky top-0 z-30` and frosted glass backdrop blur. |
 
 #### Usage Examples:
 
@@ -348,17 +349,22 @@ The top navigation and context bar. It automatically or manually displays page t
 ```
 
 #### Slots
+- `#menu-button`: Optional slot before the title to place your own custom mobile navigation toggle.
 - `#left="{ title, description, breadcrumbs }"`: Completely customizes the left header content.
 - `#title-badge`: Renders a badge or pill right beside the title (e.g. `v1.0`, status pill).
 - `#actions`: Extra action buttons, search bar, or notification bells.
 - `#theme-toggle`: Dedicated slot for `<FuseThemeToggler />`.
 - `default`: Anything placed directly inside `<FuseGreetBar>...</FuseGreetBar>` renders in the right actions area.
 
+> **📱 Mobile Polish**: Breadcrumbs automatically scroll horizontally with hidden scrollbars (`scrollbar-hide`), preventing multi-line clutter. User profile avatar collapses to a neat square/circle button on small viewports with active touch feedback.
+
 ---
 
 ### 3. `FuseHeader`
 
-A modern, responsive, and reconfigurable top application bar. It brings together logo and brand branding, multi-level dropdown navigation (desktop popovers and mobile hamburger menu), quick action buttons with notification badges, user profile dropdown with logout, sticky top placement, and an interactive section customizer that allows end users to reorder or hide sections with zero-dependency `localStorage` persistence.
+A modern, responsive, and reconfigurable top application bar. It brings together logo and brand branding, multi-level dropdown navigation (desktop popovers and a dedicated slide-out mobile drawer with accordion submenus), quick action buttons with notification badges, user profile dropdown with logout, sticky top placement, and an interactive section customizer that allows end users to reorder or hide sections with zero-dependency `localStorage` persistence.
+
+> **📱 Mobile Navigation Drawer**: On mobile devices (`< 768px`), `FuseHeader` provides a silky-smooth slide-over drawer with backdrop blur, accordion-style submenus, background scroll locking, keyboard Escape closing, and integrated profile/logout footer. Popovers automatically clamp within screen bounds to prevent horizontal viewport blowout.
 
 | Prop | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
@@ -970,8 +976,10 @@ Make sure your CSS includes `@source` pointing to `fuse-ui`:
 ```
 Without this, Tailwind v4 purges all unused classes and will not style the components.
 
-### 2. Mobile Menu Overlaps Header Text?
-`FuseSideBar` uses a fixed floating hamburger button on mobile screens (`lg:hidden`). `FuseGreetBar` automatically leaves space for it when `mobileMenuOffset` is enabled (default `true`).
+### 2. Smooth Mobile Layout & Navigation
+- **`FuseSideBar` + `FuseGreetBar`**: `FuseSideBar` uses a floating hamburger button on mobile screens (`lg:hidden`). `FuseGreetBar` reserves 56px–64px left clearance automatically when `mobileMenuOffset` is enabled (default `true`) so titles and breadcrumbs never collide with the button.
+- **Custom Mobile Trigger**: If you prefer an inline menu button inside `FuseGreetBar`, set `:mobile-menu-offset="false"` and use the `#menu-button` slot.
+- **Standalone `FuseHeader`**: If you use `FuseHeader` as your top navigation, mobile mode activates under 768px (`md`), displaying a hamburger button that opens a silky slide-over drawer with backdrop blur, accordion submenus, and scroll locking.
 
 ### 3. Customizing Brand Colors
 You don't need to fork the repo to change theme colors! Simply override any of the `--color-*` variables in your `@theme` block:

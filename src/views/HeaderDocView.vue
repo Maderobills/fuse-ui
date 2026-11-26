@@ -15,6 +15,8 @@ import {
   BarChart3,
   Layers,
   ShieldAlert,
+  Smartphone,
+  CheckCircle2,
 } from '@lucide/vue'
 import { FuseHeader, FuseThemeToggler } from '../main.js'
 import DemoPreview from './components/DemoPreview.vue'
@@ -171,6 +173,32 @@ const currentSnippet = () => {
       <p class="text-xs text-foreground/80 dark:text-dark-foreground/80 leading-relaxed">
         Use <code class="font-bold font-mono">FuseHeader</code> when your application uses horizontal navigation, top-bar branding, or SaaS portals that allow end users to customize their toolbar layout. While <code class="font-bold font-mono">FuseSideBar</code> powers vertical side layouts and <code class="font-bold font-mono">FuseGreetBar</code> displays subpage breadcrumbs/greetings, <code class="font-bold font-mono">FuseHeader</code> serves as the primary top application shell.
       </p>
+    </div>
+
+    <!-- Mobile Drawer & Experience Highlights -->
+    <div class="p-5 rounded-xl border border-primary/20 bg-primary/5 dark:bg-dark-primary/10 space-y-2.5">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-primary dark:text-dark-primary flex items-center gap-1.5">
+        <Smartphone class="w-4 h-4" />
+        <span>Full Mobile Drawer Navigation</span>
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-foreground/80 dark:text-dark-foreground/80">
+        <div class="flex items-start gap-2">
+          <CheckCircle2 class="w-4 h-4 text-primary dark:text-dark-primary shrink-0 mt-0.5" />
+          <span><strong>Slide-over Mobile Drawer:</strong> Clicking the hamburger menu triggers a smooth slide-out navigation panel with backdrop blur, brand header, and close button.</span>
+        </div>
+        <div class="flex items-start gap-2">
+          <CheckCircle2 class="w-4 h-4 text-primary dark:text-dark-primary shrink-0 mt-0.5" />
+          <span><strong>Accordion Submenus:</strong> Nested navigation groups smoothly expand/collapse with animated chevron arrows for clean mobile browsing.</span>
+        </div>
+        <div class="flex items-start gap-2">
+          <CheckCircle2 class="w-4 h-4 text-primary dark:text-dark-primary shrink-0 mt-0.5" />
+          <span><strong>Integrated Profile & Actions:</strong> Mobile drawer footer houses user avatar, role badge, profile shortcuts, and logout button with comfortable touch targets.</span>
+        </div>
+        <div class="flex items-start gap-2">
+          <CheckCircle2 class="w-4 h-4 text-primary dark:text-dark-primary shrink-0 mt-0.5" />
+          <span><strong>Keyboard & Scroll Locking:</strong> Automatically locks background scroll while open, closes on route navigation or <kbd class="px-1 py-0.5 bg-muted dark:bg-dark-muted rounded font-mono text-[10px]">Esc</kbd> key.</span>
+        </div>
+      </div>
     </div>
 
     <!-- Style Variation Selector -->

@@ -49,6 +49,7 @@ export interface FuseGreetBarProps {
   user?: FuseUser | null
   profileRoute?: string
   mobileMenuOffset?: boolean
+  sticky?: boolean
 }
 
 export interface HeaderNavItem {
